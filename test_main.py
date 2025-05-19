@@ -7,4 +7,5 @@ def test_main_output():
         stderr=subprocess.PIPE,
         text=True
     )
-    assert result.stdout.strip() == "Hello World"
+    assert "Order Order001 toegevoegd: ['Patat', 'Frikandel']" in result.stdout
+    assert "Order001: ['Patat', 'Frikandel']" in result.stdout

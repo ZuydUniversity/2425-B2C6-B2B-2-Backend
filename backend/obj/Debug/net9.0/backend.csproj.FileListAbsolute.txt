@@ -1,0 +1,15 @@
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\bin\Debug\net9.0\backend.exe
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\bin\Debug\net9.0\backend.deps.json
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\bin\Debug\net9.0\backend.runtimeconfig.json
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\bin\Debug\net9.0\backend.dll
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\bin\Debug\net9.0\backend.pdb
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\obj\Debug\net9.0\backend.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\obj\Debug\net9.0\backend.AssemblyInfoInputs.cache
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\obj\Debug\net9.0\backend.AssemblyInfo.cs
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\obj\Debug\net9.0\backend.csproj.CoreCompileInputs.cache
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\obj\Debug\net9.0\backend.sourcelink.json
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\obj\Debug\net9.0\backend.dll
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\obj\Debug\net9.0\refint\backend.dll
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\obj\Debug\net9.0\backend.pdb
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\obj\Debug\net9.0\backend.genruntimeconfig.cache
+C:\Users\roelr\source\repos\2425-B2C6-B2B-2-Backend\backend\obj\Debug\net9.0\ref\backend.dll

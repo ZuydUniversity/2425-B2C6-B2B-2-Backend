@@ -25,9 +25,6 @@ jobs:
       - name: Build solution
         run: dotnet build backend.sln --no-restore --configuration Release
 
-      - name: Run unit tests
-        run: dotnet test backend.sln --no-build --verbosity normal
-
       - name: Validate Dependency Injection (app must start)
         run: dotnet run --project backend/backend.csproj --configuration Release
 

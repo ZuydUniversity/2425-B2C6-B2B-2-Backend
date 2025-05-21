@@ -8,18 +8,22 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          python-version: '3.10'
+          dotnet-version: '8.0.x'  # Pas aan op jouw project (.NET 6, 7, 8, etc.)
 
-      - name: Install pytest
-        run: pip install pytest
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
 
       - name: Run tests
-        run: pytest
+        run: dotnet test --no-build --verbosity normal

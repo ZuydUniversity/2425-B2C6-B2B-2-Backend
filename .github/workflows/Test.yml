@@ -1,4 +1,4 @@
-name: Test
+name: Build and Test (.NET)
 
 on:
   push:
@@ -7,23 +7,28 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  build-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'  
+          dotnet-version: '9.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore backend.sln
 
-      - name: Build
-        run: dotnet build --no-restore
+      - name: Build solution
+        run: dotnet build backend.sln --no-restore --configuration Release
 
+      - name: Run unit tests
+        run: dotnet test backend.sln --no-build --verbosity normal
+
+      - name: Validate Dependency Injection (app must start)
+        run: dotnet run --project backend/backend.csproj --no-build
       - name: Run tests
         run: dotnet test --no-build --verbosity normal

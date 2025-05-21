@@ -19,6 +19,11 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Clean old builds
+        run: |
+          rm -rf backend/bin backend/obj
+          rm -rf backend.Tests/bin backend.Tests/obj
+
       - name: Restore dependencies
         run: dotnet restore backend.sln
 
@@ -29,4 +34,5 @@ jobs:
         run: dotnet run --project backend/backend.csproj --configuration Release
 
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test backend.Tests/backend.Tests.csproj --no-build --verbosity normal
+

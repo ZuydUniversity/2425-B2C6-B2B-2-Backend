@@ -1,14 +1,14 @@
-
 using backend.Models;
 using System;
 
 namespace backend.Services
 {
-    public class FacturatieService
+    public class InvoicingService
     {
-        public void Factureer(Order order)
+        public void GenerateInvoice(Order order)
         {
-            Console.WriteLine($"Factuur aangemaakt voor {order.KlantNaam} voor {order.Aantal} motor(en).");
+            Console.WriteLine($"Factuur aangemaakt voor {order.CustomerName} voor {order.Quantity} motor(en).");
         }
     }
 }
+

@@ -4,11 +4,11 @@ using System;
 
 namespace backend.Services
 {
-    public class ExpeditieService
+    public class ShippingService
     {
-        public void VerzendProduct(Order order)
+        public void DispatchOrder(Order order)
         {
-            Console.WriteLine($"Verzending gestart voor order van {order.KlantNaam}");
+            Console.WriteLine($"Verzending gestart voor order van {order.CustomerName}");
         }
     }
 }

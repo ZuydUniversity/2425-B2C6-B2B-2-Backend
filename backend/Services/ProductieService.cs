@@ -4,12 +4,13 @@ using System;
 
 namespace backend.Services
 {
-    public class ProductieService
+    public class ProductionService
     {
-        public bool ControleerMaterialenEnStart(Order order)
+        public bool CheckMaterialsAndStart(Order order)
         {
-            Console.WriteLine("Controle materialen voor order van " + order.KlantNaam);
-            return order.Geaccordeerd;
+            Console.WriteLine("Controle materialen voor order van " + order.CustomerName);
+            return order.IsApproved;
         }
     }
 }
+

@@ -1,3 +1,4 @@
+
 using Xunit;
 using backend.Models;
 using backend.Services;
@@ -7,27 +8,27 @@ namespace backend.Tests.Quality
     public class EndToEndTest
     {
         [Fact]
-        public void FullFlow_ShouldExecuteSuccessfully()
+        public void VolledigeFlow_KanUitgevoerdWorden()
         {
             var order = new Order
             {
-                CustomerName = "FlowTest",
+                KlantNaam = "FlowTest",
                 Type = MotorType.C,
-                Quantity = 2
+                Aantal = 2
             };
 
             var orderService = new OrderService();
-            var production = new ProductionService();
-            var account = new AccountManagerService();
-            var shipping = new ShippingService();
-            var invoicing = new InvoicingService();
+            var productie = new ProductieService();
+            var account = new AccountmanagerService();
+            var expeditie = new ExpeditieService();
+            var factuur = new FacturatieService();
 
-            Assert.True(orderService.ValidateAndApprove(order));
-            Assert.True(production.CheckMaterialsAndStart(order));
-            Assert.True(account.VerifyFinalProduct(order));
+            Assert.True(orderService.ValideerEnAccordeer(order));
+            Assert.True(productie.ControleerMaterialenEnStart(order));
+            Assert.True(account.ControleerEindproduct(order));
 
-            shipping.DispatchOrder(order);
-            invoicing.GenerateInvoice(order);
+            expeditie.VerzendProduct(order);
+            factuur.Factureer(order);
         }
     }
 }

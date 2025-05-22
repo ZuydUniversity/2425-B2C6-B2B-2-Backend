@@ -4,27 +4,26 @@ namespace backend.Models
 {
     public class Order
     {
-        public string KlantNaam { get; set; } = string.Empty;
-        public MotorType Type { get; set; }
-        public int Aantal { get; set; }
-        public DateTime Besteldatum { get; set; }
-        public bool Geaccordeerd { get; set; } = false;
-        public OrderStatus Status { get; set; } = OrderStatus.Nieuw;
+        public string CustomerName { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+        public DateTime OrderDate { get; set; }
+        public bool IsApproved { get; set; } = false;
+        public bool IsValid => Quantity >= 1 && Quantity <= 3;
 
 
-        public bool IsGeldig => Aantal >= 1 && Aantal <= 3;
     }
     public enum OrderStatus
     {
-        Nieuw,
-        Goedgekeurd,
-        Geweigerd,
-        InPlanning,
-        InProductie,
-        Gereed,
-        Verzendklaar,
-        Verzend,
-        Gefactureerd
+        New,
+        Approved,
+        Rejected,
+        Scheduled,
+        InProduction,
+        Ready,
+        ReadyToShip,
+        Shipped,
+        Invoiced
     }
+
 
 }

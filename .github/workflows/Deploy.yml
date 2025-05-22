@@ -1,4 +1,4 @@
-name: Build and Test (.NET)
+name: Deploy
 
 on:
   push:
@@ -19,17 +19,19 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Clean old builds
+        run: |
+          rm -rf backend/bin backend/obj
+          rm -rf backend.Tests/bin backend.Tests/obj
+
       - name: Restore dependencies
         run: dotnet restore backend.sln
 
       - name: Build solution
         run: dotnet build backend.sln --no-restore --configuration Release
 
-      - name: Run unit tests
-        run: dotnet test backend.sln --no-build --verbosity normal
-
       - name: Validate Dependency Injection (app must start)
         run: dotnet run --project backend/backend.csproj --configuration Release
 
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test backend.Tests/backend.Tests.csproj --no-build --configuration Release --verbosity normal

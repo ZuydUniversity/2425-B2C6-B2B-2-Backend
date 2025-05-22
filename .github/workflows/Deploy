@@ -1,0 +1,37 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Clean old builds
+        run: |
+          rm -rf backend/bin backend/obj
+          rm -rf backend.Tests/bin backend.Tests/obj
+
+      - name: Restore dependencies
+        run: dotnet restore backend.sln
+
+      - name: Build solution
+        run: dotnet build backend.sln --no-restore --configuration Release
+
+      - name: Validate Dependency Injection (app must start)
+        run: dotnet run --project backend/backend.csproj --configuration Release
+
+      - name: Run tests
+        run: dotnet test backend.Tests/backend.Tests.csproj --no-build --configuration Release --verbosity normal

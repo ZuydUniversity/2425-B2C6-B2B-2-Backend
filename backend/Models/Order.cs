@@ -1,17 +1,17 @@
-using System;
-
 namespace backend.Models
 {
     public class Order
     {
         public string CustomerName { get; set; } = string.Empty;
+        public MotorType Type { get; set; }
         public int Quantity { get; set; }
-        public DateTime OrderDate { get; set; }
         public bool IsApproved { get; set; } = false;
+        public DateTime OrderDate { get; set; }
+        public OrderStatus Status { get; set; } = OrderStatus.New;
+
         public bool IsValid => Quantity >= 1 && Quantity <= 3;
-
-
     }
+
     public enum OrderStatus
     {
         New,
@@ -24,6 +24,4 @@ namespace backend.Models
         Shipped,
         Invoiced
     }
-
-
 }

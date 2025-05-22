@@ -1,4 +1,3 @@
-
 using Xunit;
 using backend.Models;
 using backend.Services;
@@ -8,37 +7,37 @@ namespace backend.Tests.Services
     public class OrderServiceTests
     {
         [Fact]
-        public void ValideOrder_WordtGeaccordeerd()
+        public void ValidOrder_ShouldBeApproved()
         {
             var order = new Order
             {
-                KlantNaam = "TestKlant",
+                CustomerName = "TestCustomer",
                 Type = MotorType.B,
-                Aantal = 2
+                Quantity = 2
             };
 
             var service = new OrderService();
-            var result = service.ValideerEnAccordeer(order);
+            var result = service.ValidateAndApprove(order);
 
             Assert.True(result);
-            Assert.True(order.Geaccordeerd);
+            Assert.True(order.IsApproved);
         }
 
         [Fact]
-        public void OngeldigeOrder_WordtNietGeaccordeerd()
+        public void InvalidOrder_ShouldNotBeApproved()
         {
             var order = new Order
             {
-                KlantNaam = "TestKlant",
+                CustomerName = "TestCustomer",
                 Type = MotorType.A,
-                Aantal = 5
+                Quantity = 5
             };
 
             var service = new OrderService();
-            var result = service.ValideerEnAccordeer(order);
+            var result = service.ValidateAndApprove(order);
 
             Assert.False(result);
-            Assert.False(order.Geaccordeerd);
+            Assert.False(order.IsApproved);
         }
     }
 }

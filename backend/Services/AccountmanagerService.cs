@@ -1,14 +1,13 @@
-
 using backend.Models;
 using System;
 
 namespace backend.Services
 {
-    public class AccountmanagerService
+    public class AccountManagerService
     {
-        public bool ControleerEindproduct(Order order)
+        public bool VerifyFinalProduct(Order order)
         {
-            Console.WriteLine("Controle eindproduct op kwaliteit en kwantiteit voor " + order.KlantNaam);
+            Console.WriteLine("Controle eindproduct op kwaliteit en kwantiteit voor " + order.CustomerName);
             return true;
         }
     }

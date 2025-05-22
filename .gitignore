@@ -162,3 +162,22 @@ cython_debug/
 
 .vs/
 
+/backend/obj/Debug/net9.0/backend.AssemblyInfoInputs.cache
+/backend/obj/Debug/net9.0/backend.assets.cache
+/backend/obj/Debug/net9.0/backend.csproj.AssemblyReference.cache
+/backend/obj/Debug/net9.0/backend.GeneratedMSBuildEditorConfig.editorconfig
+/backend/obj/backend.csproj.nuget.dgspec.json
+/backend/obj/backend.csproj.nuget.g.props
+/backend/obj/project.assets.json
+/backend/obj/project.nuget.cache
+/backend.Tests/bin/Debug/net9.0/.msCoverageSourceRootsMapping_backend.Tests
+/backend.Tests/bin/Debug/net9.0/CoverletSourceRootsMapping_backend.Tests
+/backend.Tests/obj/Debug/net9.0/backend.Tests.AssemblyInfo.cs
+/backend.Tests/obj/Debug/net9.0/backend.Tests.AssemblyInfoInputs.cache
+/backend.Tests/obj/Debug/net9.0/backend.Tests.assets.cache
+/backend.Tests/obj/Debug/net9.0/backend.Tests.csproj.AssemblyReference.cache
+/backend.Tests/obj/Debug/net9.0/backend.Tests.GeneratedMSBuildEditorConfig.editorconfig
+/backend.Tests/obj/backend.Tests.csproj.nuget.dgspec.json
+/backend.Tests/obj/backend.Tests.csproj.nuget.g.props
+/backend.Tests/obj/project.assets.json
+/backend.Tests/obj/project.nuget.cache

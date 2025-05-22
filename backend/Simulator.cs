@@ -5,19 +5,25 @@ namespace backend.Models
     public class Simulator
     {
         private readonly Random _random = new();
+        private readonly Customer _customer;
+        private readonly AccountManager _accountManager;
 
-        public void StartInteractieveSimulatie()
+        public Simulator()
         {
-            var klant = new Customer(1);
-            var accountManager = new AccountManager();
-            int aantalOrders = 0;
+            _customer = new Customer(1);
+            _accountManager = new AccountManager();
+        }
+
+        public void StartInteractiveSimulation()
+        {
+            int orderCount = 0;
             int maxOrders = 3;
 
             Console.WriteLine("Welkom bij de BuildingBlocks simulatie");
 
-            while (aantalOrders < maxOrders)
+            while (orderCount < maxOrders)
             {
-                Console.Write($"\nOrder plaatsen ({aantalOrders + 1}/{maxOrders})? (Enter = Ja / q = Stoppen): ");
+                Console.Write($"\nOrder plaatsen ({orderCount + 1}/{maxOrders})? (Enter = Ja / q = Stoppen): ");
                 string input = Console.ReadLine()?.Trim().ToLower() ?? "";
 
                 if (input == "q")
@@ -26,11 +32,11 @@ namespace backend.Models
                     return;
                 }
 
-                var order = klant.PlaatsOrder(_random);
-                Console.WriteLine($"Order aangemaakt: {order.Type}, aantal: {order.Aantal}");
+                var order = _customer.PlaceOrder(_random);
+                Console.WriteLine($"Order aangemaakt: {order.Type}, aantal: {order.Quantity}");
 
-                bool akkoord = accountManager.AccordeerOrder(order);
-                if (!akkoord)
+                bool approved = _accountManager.ApproveOrder(order);
+                if (!approved)
                 {
                     Console.WriteLine("Order wordt niet opgenomen in de planning.");
                 }
@@ -39,7 +45,7 @@ namespace backend.Models
                     Console.WriteLine("Order kan worden doorgezet naar planning.");
                 }
 
-                aantalOrders++;
+                orderCount++;
             }
 
             Console.WriteLine("\nMaximaal aantal orders bereikt. Simulatie afgesloten.");

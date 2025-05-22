@@ -1,16 +1,16 @@
+
 using backend.Models;
 
 namespace backend.Services
 {
     public class OrderService
     {
-        public bool ValidateAndApprove(Order order)
+        public bool ValideerEnAccordeer(Order order)
         {
-            if (!order.IsValid)
+            if (!order.IsGeldig)
                 return false;
 
-            order.IsApproved = true;
-            order.Status = OrderStatus.Approved;
+            order.Geaccordeerd = true;
             return true;
         }
     }

@@ -8,7 +8,7 @@ namespace backend
         static void Main(string[] args)
         {
             var simulator = new Simulator();
-            simulator.StartInteractieveSimulatie();
+            simulator.StartInteractieveSimulatie();            
         }
     }
 }

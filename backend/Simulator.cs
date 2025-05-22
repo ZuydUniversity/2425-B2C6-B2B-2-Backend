@@ -9,23 +9,40 @@ namespace backend.Models
         public void StartInteractieveSimulatie()
         {
             var klant = new Customer(1);
-            Console.WriteLine("Welkom bij de order simulator!");
+            var accountManager = new AccountManager();
+            int aantalOrders = 0;
+            int maxOrders = 3;
 
-            while (true)
+            Console.WriteLine("Welkom bij de BuildingBlocks simulatie");
+
+            while (aantalOrders < maxOrders)
             {
-                Console.Write("\nOrder plaatsen? (druk op Enter, of typ 'q' om te stoppen): ");
+                Console.Write($"\nOrder plaatsen ({aantalOrders + 1}/{maxOrders})? (Enter = Ja / q = Stoppen): ");
                 string input = Console.ReadLine()?.Trim().ToLower() ?? "";
 
                 if (input == "q")
                 {
-                    Console.WriteLine("Simulatie gestopt.");
-                    break;
+                    Console.WriteLine("Simulatie handmatig gestopt.");
+                    return;
                 }
 
                 var order = klant.PlaatsOrder(_random);
+                Console.WriteLine($"Order aangemaakt: {order.Type}, aantal: {order.Aantal}");
 
-                Console.WriteLine($"✅ {order.KlantNaam} plaatst een order: {order.Type}, aantal: {order.Aantal}");
+                bool akkoord = accountManager.AccordeerOrder(order);
+                if (!akkoord)
+                {
+                    Console.WriteLine("Order wordt niet opgenomen in de planning.");
+                }
+                else
+                {
+                    Console.WriteLine("Order kan worden doorgezet naar planning.");
+                }
+
+                aantalOrders++;
             }
+
+            Console.WriteLine("\nMaximaal aantal orders bereikt. Simulatie afgesloten.");
         }
     }
 }

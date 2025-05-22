@@ -1,30 +1,29 @@
-
 using Xunit;
 using backend.Models;
 using backend.Services;
 
 namespace backend.Tests.Services
 {
-    public class ProductieServiceTests
+    public class ProductionServiceTests
     {
         [Fact]
-        public void StartProductie_AlleenAlsOrderGeaccordeerd()
+        public void StartProduction_OnlyIfOrderApproved()
         {
-            var order = new Order { KlantNaam = "Test", Aantal = 1, Geaccordeerd = true };
-            var productie = new ProductieService();
+            var order = new Order { CustomerName = "Test", Quantity = 1, IsApproved = true };
+            var production = new ProductionService();
 
-            var result = productie.ControleerMaterialenEnStart(order);
+            var result = production.CheckMaterialsAndStart(order);
 
             Assert.True(result);
         }
 
         [Fact]
-        public void StartProductie_FaaltZonderAccordering()
+        public void StartProduction_FailsWithoutApproval()
         {
-            var order = new Order { KlantNaam = "Test", Aantal = 1, Geaccordeerd = false };
-            var productie = new ProductieService();
+            var order = new Order { CustomerName = "Test", Quantity = 1, IsApproved = false };
+            var production = new ProductionService();
 
-            var result = productie.ControleerMaterialenEnStart(order);
+            var result = production.CheckMaterialsAndStart(order);
 
             Assert.False(result);
         }

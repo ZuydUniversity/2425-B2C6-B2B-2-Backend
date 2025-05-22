@@ -5,12 +5,13 @@ namespace backend.Services
 {
     public class OrderService
     {
-        public bool ValideerEnAccordeer(Order order)
+        public bool ValidateAndApprove(Order order)
         {
-            if (!order.IsGeldig)
+            if (!order.IsValid)
                 return false;
 
-            order.Geaccordeerd = true;
+            order.IsApproved = true;
+            order.Status = OrderStatus.Approved;
             return true;
         }
     }

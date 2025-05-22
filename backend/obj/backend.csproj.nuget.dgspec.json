@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Stef Konings\\Source\\Repos\\2425-B2C6-B2B-2-Backend\\backend\\backend.csproj": {}
+    "C:\\Users\\roelr\\source\\repos\\ZuydUniversity\\2425-B2C6-B2B-2-Backend\\backend\\backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Stef Konings\\Source\\Repos\\2425-B2C6-B2B-2-Backend\\backend\\backend.csproj": {
+    "C:\\Users\\roelr\\source\\repos\\ZuydUniversity\\2425-B2C6-B2B-2-Backend\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Stef Konings\\Source\\Repos\\2425-B2C6-B2B-2-Backend\\backend\\backend.csproj",
+        "projectUniqueName": "C:\\Users\\roelr\\source\\repos\\ZuydUniversity\\2425-B2C6-B2B-2-Backend\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\Users\\Stef Konings\\Source\\Repos\\2425-B2C6-B2B-2-Backend\\backend\\backend.csproj",
-        "packagesPath": "C:\\Users\\Stef Konings\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Stef Konings\\Source\\Repos\\2425-B2C6-B2B-2-Backend\\backend\\obj\\",
+        "projectPath": "C:\\Users\\roelr\\source\\repos\\ZuydUniversity\\2425-B2C6-B2B-2-Backend\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\roelr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\roelr\\source\\repos\\ZuydUniversity\\2425-B2C6-B2B-2-Backend\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Stef Konings\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\roelr\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -43,13 +43,45 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -66,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -5,22 +5,23 @@ namespace backend.Models
     public class Customer
     {
         public int Id { get; set; }
-        public string Naam => $"Klant #{Id}";
+        public string Name => $"Klant #{Id}";
 
         public Customer(int id)
         {
             Id = id;
         }
 
-        public Order PlaatsOrder(Random random)
+        public Order PlaceOrder(Random random)
         {
             return new Order
             {
-                KlantNaam = Naam,
+                CustomerName = Name,
                 Type = (MotorType)random.Next(0, 3),
-                Aantal = random.Next(1, 4),
-                Besteldatum = DateTime.Now
+                Quantity = random.Next(1, 4),
+                OrderDate = DateTime.Now
             };
         }
     }
 }
+

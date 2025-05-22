@@ -1,5 +1,7 @@
-﻿using backend.Models;
-using System;
+﻿using System;
+using backend.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace backend
 {
@@ -7,8 +9,16 @@ namespace backend
     {
         static void Main(string[] args)
         {
-            var simulator = new Simulator();
-            simulator.StartInteractieveSimulatie();            
+            using var host = Host.CreateDefaultBuilder(args)
+                .ConfigureServices((context, services) =>
+                {
+                    services.AddTransient<Simulator>();
+                })
+                .Build();
+
+            var simulator = host.Services.GetRequiredService<Simulator>();
+            simulator.StartInteractiveSimulation();
         }
     }
 }
+

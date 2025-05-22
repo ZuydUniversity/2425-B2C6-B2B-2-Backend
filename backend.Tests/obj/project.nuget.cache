@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hrMR7QsYL24=",
+  "dgSpecHash": "NRJAzG7y0/A=",
   "success": true,
   "projectFilePath": "C:\\Users\\roelr\\source\\repos\\ZuydUniversity\\2425-B2C6-B2B-2-Backend\\backend.Tests\\backend.Tests.csproj",
   "expectedPackageFiles": [
@@ -15,6 +15,7 @@
     "C:\\Users\\roelr\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.5\\microsoft.entityframeworkcore.9.0.5.nupkg.sha512",
     "C:\\Users\\roelr\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\9.0.5\\microsoft.entityframeworkcore.abstractions.9.0.5.nupkg.sha512",
     "C:\\Users\\roelr\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\9.0.5\\microsoft.entityframeworkcore.analyzers.9.0.5.nupkg.sha512",
+    "C:\\Users\\roelr\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\9.0.5\\microsoft.entityframeworkcore.inmemory.9.0.5.nupkg.sha512",
     "C:\\Users\\roelr\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\9.0.5\\microsoft.entityframeworkcore.relational.9.0.5.nupkg.sha512",
     "C:\\Users\\roelr\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\9.0.5\\microsoft.entityframeworkcore.sqlserver.9.0.5.nupkg.sha512",
     "C:\\Users\\roelr\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\9.0.5\\microsoft.extensions.caching.abstractions.9.0.5.nupkg.sha512",

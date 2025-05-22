@@ -4,25 +4,26 @@ namespace backend.Models
 {
     public class AccountManager
     {
-        public bool AccordeerOrder(Order order)
+        public bool ApproveOrder(Order order)
         {
-            if (!order.IsGeldig)
+            if (!order.IsValid)
             {
-                Console.WriteLine($" Order van {order.KlantNaam} is ongeldig (aantal {order.Aantal})");
+                Console.WriteLine($"Order van {order.CustomerName} is ongeldig (aantal {order.Quantity})");
                 return false;
             }
 
-            // Optioneel: check of de klantnaam en datum ingevuld zijn
-            if (string.IsNullOrWhiteSpace(order.KlantNaam) || order.Besteldatum == default)
+            if (string.IsNullOrWhiteSpace(order.CustomerName) || order.OrderDate == default)
             {
-                Console.WriteLine($" Order mist klantnaam of besteldatum");
+                Console.WriteLine("Order mist klantnaam of besteldatum");
                 return false;
             }
 
-            order.Geaccordeerd = true;
-            order.Status = OrderStatus.Goedgekeurd;
-            Console.WriteLine($" Order van {order.KlantNaam} is geaccordeerd.");
+            order.IsApproved = true;
+            order.Status = OrderStatus.Approved;
+            Console.WriteLine($"Order van {order.CustomerName} is geaccordeerd.");
             return true;
         }
     }
 }
+
+

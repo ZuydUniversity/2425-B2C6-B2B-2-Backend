@@ -13,4 +13,3 @@ namespace backend.Models
         public bool IsGeldig => Aantal >= 1 && Aantal <= 3;
     }
 }
-

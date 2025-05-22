@@ -1,16 +1,15 @@
+
 using backend.Models;
 using System;
 
 namespace backend.Services
 {
-    public class ProductionService
+    public class ProductieService
     {
-        public bool CheckMaterialsAndStart(Order order)
+        public bool ControleerMaterialenEnStart(Order order)
         {
-            Console.WriteLine("Controle materialen voor order van " + order.CustomerName);
-            return order.IsApproved;
+            Console.WriteLine("Controle materialen voor order van " + order.KlantNaam);
+            return order.Geaccordeerd;
         }
     }
 }
-
-

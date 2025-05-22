@@ -1,14 +1,14 @@
+
 using backend.Models;
 using System;
 
 namespace backend.Services
 {
-    public class ShippingService
+    public class ExpeditieService
     {
-        public void DispatchOrder(Order order)
+        public void VerzendProduct(Order order)
         {
-            Console.WriteLine($"Verzending gestart voor order van {order.CustomerName}");
+            Console.WriteLine($"Verzending gestart voor order van {order.KlantNaam}");
         }
     }
 }
-

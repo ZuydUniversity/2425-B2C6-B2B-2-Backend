@@ -1,45 +1,96 @@
-# Visual Studio
-.vs/
-*.user
-*.suo
-
-# Build outputs
+# .NET build artifacts
 bin/
 obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
-# NuGet
+# VS Code
+.vscode/
+
+# Visual Studio
+.vs/
+.vsconfig
+
+# Rider (JetBrains)
+.idea/
+
+# Build results
+[Bb]uild/
+[Ll]og/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+out/
+publish/
+TestResults/
+TestResult.xml
+
+# NUGET
 *.nupkg
 *.snupkg
-*.nuspec
+.nuget/
+packages/
 project.lock.json
-project.assets.json
-*.csproj.nuget.dgspec.json
-*.csproj.nuget.g.props
-*.csproj.nuget.g.targets
-*.nuget.cache
+project.fragment.lock.json
 
-# Test output
-TestResults/
+# Entity Framework
+Migrations/
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# DotCover
+*.dotCover
+
+# SQL Server
+*.mdf
+*.ldf
+
+# Docker
+**/docker-compose*.yml
+**/Dockerfile
+.dockerignore
+
+# Coverage
 *.coverage
 *.coveragexml
-*.testsettings
-*.vscode/
+*.codecoverage
+coverage/
+lcov.info
 
 # Logs
 *.log
 
-# EF Core Migrations metadata
-Migrations/
+# IDE Directories
+*.idea/
+*.sublime-workspace
+*.sublime-project
+
+# System
+Thumbs.db
+Desktop.ini
 
 # Other
-*.db
-*.sqlite
-*.mdf
-*.ldf
-*.editorconfig
-*.cache
-
-# Docker
-*.dockerignore
-Dockerfile
 .env
+.env.*
+
+# Rider-specific
+.idea/
+*.sln.iml
+
+# Git merge conflict backup
+*.orig
+
+# Caches (if needed)
+*.cache
+*.db
+*.db-shm
+*.db-wal
+
+# JetBrains Rider
+.idea/
+*.sln.iml

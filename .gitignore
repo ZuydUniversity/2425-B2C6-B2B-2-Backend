@@ -35,6 +35,7 @@ TestResult.xml
 packages/
 project.lock.json
 project.fragment.lock.json
+*.nuget.dgspec.json
 
 # Entity Framework
 Migrations/
@@ -91,6 +92,9 @@ Desktop.ini
 *.db-shm
 *.db-wal
 
-# JetBrains Rider
-.idea/
-*.sln.iml
+# Extra build directories en gegenereerde bestanden
+**/obj/
+**/Debug/
+**/*.AssemblyInfo.cs
+**/*.AssemblyReference.cache
+**/*.nuget.dgspec.json

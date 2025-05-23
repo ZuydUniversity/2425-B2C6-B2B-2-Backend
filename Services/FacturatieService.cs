@@ -1,7 +1,7 @@
-using backend.Models;
+using Backend.Models;
 using System;
 
-namespace backend.Services
+namespace Backend.Services
 {
     public class InvoicingService
     {

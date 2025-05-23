@@ -1,8 +1,8 @@
 using Xunit;
-using backend.Models;
-using backend.Services;
+using Backend.Models;
+using Backend.Services;
 
-namespace backend.Tests.Services
+namespace Backend.Tests.Services
 {
     public class OrderServiceTests
     {

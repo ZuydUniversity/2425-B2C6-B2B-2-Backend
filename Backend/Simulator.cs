@@ -36,14 +36,32 @@ namespace Backend
                 var order = _customer.PlaceOrder(_random);
                 Console.WriteLine($"Order aangemaakt: {order.Type}, aantal: {order.Quantity}");
 
-                bool approved = _accountManager.ApproveOrder(order);
-                if (!approved)
+                try
                 {
-                    Console.WriteLine("Order wordt niet opgenomen in de planning.");
+                    _accountManager.CheckOrderCompleteness(order);
+
+                    bool approved = _accountManager.ApproveOrder(order);
+                    if (!approved)
+                    {
+                        Console.WriteLine("Order wordt niet opgenomen in de planning.");
+                        continue;
+                    }
+
+                    _accountManager.SignOrder(order);
+                    _accountManager.AddToWorkInProgress(order);
+
+                    // Simuleer kwaliteitsprobleem willekeurig
+                    order.HasQualityIssues = _random.NextDouble() < 0.2;
+
+                    _accountManager.CheckProductQuality(order);
+                    _accountManager.CheckOffWorkInProgress(order);
+                    _accountManager.DeliverOrder(order);
+
+                    Console.WriteLine("Order succesvol verwerkt en geleverd.");
                 }
-                else
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Order kan worden doorgezet naar planning.");
+                    Console.WriteLine($"Fout tijdens orderverwerking: {ex.Message}");
                 }
 
                 orderCount++;

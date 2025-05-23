@@ -1,8 +1,8 @@
 using Xunit;
-using backend.Models;
-using backend.Services;
+using Backend.Models;
+using Backend.Services;
 
-namespace backend.Tests.Quality
+namespace Backend.Tests.Quality
 {
     public class EndToEndTest
     {

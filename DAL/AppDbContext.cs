@@ -1,7 +1,7 @@
-﻿using backend.Models;
+﻿using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.DAL
+namespace Backend.DAL
 {
     public class AppDbContext : DbContext
     {

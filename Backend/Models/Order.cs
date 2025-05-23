@@ -12,8 +12,14 @@ namespace Backend.Models
         public DateTime OrderDate { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.New;
 
+        // Toegevoegde properties:
+        public bool IsSignedByAccountManager { get; set; } = false;
+        public bool HasQualityIssues { get; set; } = false;
+        public bool IsComplete => !string.IsNullOrWhiteSpace(CustomerName) && OrderDate != default;
+
         public bool IsValid => Quantity >= 1 && Quantity <= 3;
     }
+
 
     public enum OrderStatus
     {

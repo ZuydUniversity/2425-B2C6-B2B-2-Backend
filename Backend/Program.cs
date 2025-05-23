@@ -1,2 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using System;
+using Backend;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        var simulator = new Simulator();
+        simulator.StartInteractiveSimulation();
+    }
+}

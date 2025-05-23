@@ -1,10 +1,11 @@
-﻿using System;
-using System.Threading;
+﻿using backend.DAL;
 using backend.Models;
-using backend.DAL;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading;
 
 namespace backend
 {
@@ -16,8 +17,7 @@ namespace backend
                 .ConfigureServices((context, services) =>
                 {
                     services.AddDbContext<AppDbContext>(options =>
-                        options.UseSqlServer("Server=sql,1433;Database=BuildingBlocksDb;User=sa;Password=Bl0ck$1234;TrustServerCertificate=True;"));
-
+                        options.UseSqlServer(context.Configuration.GetConnectionString("DefaultConnection")));
 
                     services.AddTransient<Simulator>();
                 })

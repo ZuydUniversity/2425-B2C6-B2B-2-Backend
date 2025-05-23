@@ -7,22 +7,22 @@ using Microsoft.Extensions.Hosting;
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-               
+        var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION")
+            ?? "Server=sqlserver;Database=BuildingBlocksDb;User Id=sa;Password=Bl0ck$1234;TrustServerCertificate=True;";
+
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer("Server=sqlserver;Database=BuildingBlocksDb;User Id=sa;Password=Bl0ck$1234;TrustServerCertificate=True;");
-
-
+            options.UseSqlServer(connectionString));
 
         services.AddTransient<Simulator>();
     })
     .Build();
 
-using (var scope = host.Services.CreateScope())
+using var scope = host.Services.CreateScope();
+var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+db.Database.EnsureCreated();
+
+if (args.Contains("--simulate"))
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated(); 
+    var simulator = scope.ServiceProvider.GetRequiredService<Simulator>();
+    simulator.StartInteractiveSimulation();
 }
-
-var simulator = host.Services.GetRequiredService<Simulator>();
-simulator.StartInteractiveSimulation();
-

@@ -10,6 +10,23 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
 
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          SA_PASSWORD: "Bl0ck$1234"
+          ACCEPT_EULA: "Y"
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "exit 0"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=BuildingBlocksDb;User Id=sa;Password=Bl0ck$1234;TrustServerCertificate=True;Encrypt=False"
+
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -23,6 +40,11 @@ jobs:
         run: |
           rm -rf backend/bin backend/obj
           rm -rf backend.Tests/bin backend.Tests/obj
+
+      - name: Wait for SQL Server
+        run: |
+          echo "Wachten op SQL Server (30 seconden)..."
+          sleep 30
 
       - name: Restore dependencies
         run: dotnet restore backend.sln

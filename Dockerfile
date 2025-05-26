@@ -10,7 +10,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
-Expose 80
-Expose 433
+EXPOSE 80
+EXPOSE 433
 
 ENTRYPOINT ["dotnet", "Backend.dll"]

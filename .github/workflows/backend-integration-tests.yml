@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build-project:
+  build:
     name: Build Project
     runs-on: ubuntu-latest
 
@@ -15,38 +15,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup .NET
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: '9.0.x'
 
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build solution
+      - name: Build all projects
         run: dotnet build --configuration Release --no-restore
 
-  run-integration-tests:
+  test:
     name: Run Integration Tests
     runs-on: ubuntu-latest
-    needs: build-project
+    needs: build
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup .NET
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: '9.0.x'
 
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Run tests with trx logger
-        run: dotnet test backend.Tests/backend.Tests.csproj --configuration Release --no-build --logger "trx"
+      - name: Build test project
+        run: dotnet build backend.Tests/backend.Tests.csproj --configuration Release
 
-        
+      - name: Run tests and generate .trx
+        run: dotnet test backend.Tests/backend.Tests.csproj --configuration Release --logger "trx"
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

@@ -1,53 +1,53 @@
-name: Backend - Build and Integration Tests
+name: CI - Build and Integration Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
-  build:
-    name: Build Project Solution
+  build-backend:
+    name: Build Backend Project
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout source
+        uses: actions/checkout@v4
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: 9.0.x
 
-      - name: Restore Dependencies
+      - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build Solution
+      - name: Build the solution
         run: dotnet build --configuration Release --no-restore
 
-  test:
+  run-integration-tests:
     name: Run Integration Tests
+    needs: build-backend
     runs-on: ubuntu-latest
-    needs: build
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout source
+        uses: actions/checkout@v4
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: 9.0.x
 
-      - name: Restore Dependencies
+      - name: Restore dependencies
         run: dotnet restore
 
-      - name: Execute Tests and Generate .trx
-        run: dotnet test Backend.sln --configuration Release --logger "trx"
+      - name: Run integration tests and generate report
+        run: dotnet test ./backend.Tests/backend.Tests.csproj --configuration Release --no-build --logger "trx"
 
-      - name: Upload Test Results (.trx)
+      - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: TestResults
           path: '**/TestResults/*.trx'

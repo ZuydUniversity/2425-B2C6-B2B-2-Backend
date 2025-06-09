@@ -1,4 +1,4 @@
-name: Backend - Build en Integratietests
+name: Backend - Build and Integration Tests
 
 on:
   push:
@@ -7,46 +7,46 @@ on:
     branches: [ main ]
 
 jobs:
-  build-project:
-    name: Bouw backend-oplossing
+  build:
+    name: Build Project Solution
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Setup .NET
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '9.0.x'
 
-      - name: Herstel dependencies
+      - name: Restore Dependencies
         run: dotnet restore
 
-      - name: Build project
+      - name: Build Solution
         run: dotnet build --configuration Release --no-restore
 
-  integration-tests:
-    name: Draai integratietests
+  test:
+    name: Run Integration Tests
     runs-on: ubuntu-latest
-    needs: build-project
+    needs: build
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Setup .NET
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '9.0.x'
 
-      - name: Herstel dependencies
+      - name: Restore Dependencies
         run: dotnet restore
 
-      - name: Draai tests en genereer .trx
-        run: dotnet test backend.Tests/backend.Tests.csproj --configuration Release --no-build --logger "trx"
+      - name: Execute Tests and Generate .trx
+        run: dotnet test ./backend.Tests/backend.Tests.csproj --configuration Release --no-build --logger "trx"
 
-      - name: Upload testresultaten (.trx)
+      - name: Upload Test Results (.trx)
         uses: actions/upload-artifact@v4
         with:
           name: test-results

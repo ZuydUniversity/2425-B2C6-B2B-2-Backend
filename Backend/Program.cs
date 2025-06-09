@@ -1,28 +1,23 @@
-﻿using Backend;
-using Backend.DAL;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Backend.Services;
+using Backend.Simulator;
 
-var host = Host.CreateDefaultBuilder(args)
+var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION")
-            ?? "Server=sqlserver;Database=BuildingBlocksDb;User Id=sa;Password=Bl0ck$1234;TrustServerCertificate=True;";
+        services.AddHttpClient<CustomerService>(c =>
+        {
+            c.BaseAddress = new Uri("http://b2b2buildingblocks.westeurope.cloudapp.azure.com:8080/");
+        });
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(connectionString));
+        services.AddHttpClient<OrderService>(c =>
+        {
+            c.BaseAddress = new Uri("http://b2b2buildingblocks.westeurope.cloudapp.azure.com:8080/");
+        });
 
-        services.AddTransient<Simulator>();
-    })
-    .Build();
+        services.AddTransient<CustomerSimulator>();
+    });
 
-using var scope = host.Services.CreateScope();
-var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-db.Database.EnsureCreated();
+var app = builder.Build();
 
-if (args.Contains("--simulate"))
-{
-    var simulator = scope.ServiceProvider.GetRequiredService<Simulator>();
-    simulator.StartInteractiveSimulation();
-}
+var simulator = app.Services.GetRequiredService<CustomerSimulator>();
+await simulator.StartAsync();

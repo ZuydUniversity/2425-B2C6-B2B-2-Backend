@@ -44,7 +44,7 @@ jobs:
         run: dotnet restore
 
       - name: Execute Tests and Generate .trx
-        run: dotnet test backend.Tests/backend.Tests.csproj --configuration Release --no-build --logger "trx"
+        run: dotnet test Backend.sln --configuration Release --logger "trx"
 
       - name: Upload Test Results (.trx)
         uses: actions/upload-artifact@v4

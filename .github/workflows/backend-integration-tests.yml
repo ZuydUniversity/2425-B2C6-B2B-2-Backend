@@ -1,35 +1,36 @@
-name: Backend Integratietests
+name: build-and-test
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Repository ophalen
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: .NET 9 installeren
+      - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: 9.0.x
 
-      - name: Dependencies herstellen
+      - name: Restore dependencies
         run: dotnet restore
 
-      - name: Project bouwen
+      - name: Build solution
         run: dotnet build --configuration Release --no-restore
 
-      - name: Integratietests uitvoeren
-        run: dotnet test backend.Tests/backend.Tests.csproj --configuration Release --no-build --verbosity normal
+      - name: Run tests and generate .trx
+        run: dotnet test backend.Tests/backend.Tests.csproj --configuration Release --no-build --logger "trx"
 
-      - name: Testresultaten uploaden
-        if: always()
+      - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results

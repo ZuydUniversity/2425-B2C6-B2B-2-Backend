@@ -7,11 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "backend.Tests", "backend.Tests\backend.Tests.csproj", "{6463202F-5B58-F17D-753B-67F5FF06B764}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
-	ProjectSection(SolutionItems) = preProject
-		Dockerfile = Dockerfile
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "..\..\..\..\Downloads\BuildingBlocks-master\BuildingBlocks-master\API\API.csproj", "{3853E654-F971-4B30-83E4-1CDA4384494D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +23,10 @@ Global
 		{6463202F-5B58-F17D-753B-67F5FF06B764}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6463202F-5B58-F17D-753B-67F5FF06B764}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6463202F-5B58-F17D-753B-67F5FF06B764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3853E654-F971-4B30-83E4-1CDA4384494D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3853E654-F971-4B30-83E4-1CDA4384494D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3853E654-F971-4B30-83E4-1CDA4384494D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3853E654-F971-4B30-83E4-1CDA4384494D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,15 +5,19 @@ using Backend.Models;
 using Backend.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace backend.Tests
 {
     public class CustomerSimulatorTests
     {
         private readonly ServiceProvider _services;
+        private readonly ITestOutputHelper _output;
 
-        public CustomerSimulatorTests()
+        public CustomerSimulatorTests(ITestOutputHelper output)
         {
+            _output = output;
+
             var sc = new ServiceCollection();
 
             sc.AddHttpClient<OrderService>(c =>
@@ -39,12 +43,19 @@ namespace backend.Tests
                 OrderDate = DateTime.UtcNow
             };
 
+            _output.WriteLine($"[START] Order aanmaken voor CustomerId={testOrder.CustomerId}");
+
             var createdOrder = await orderService.CreateAndReturnAsync(testOrder);
+
+            _output.WriteLine($"[INFO] Aangemaakt met ID={createdOrder.Id}, status={createdOrder.Status}");
 
             Assert.NotNull(createdOrder);
             Assert.True(createdOrder.Id > 0);
 
             await orderService.DeleteAsync(createdOrder.Id);
+
+            _output.WriteLine($"[CLEANUP] Verwijderd ID={createdOrder.Id}");
         }
     }
 }
+

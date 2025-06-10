@@ -23,7 +23,8 @@ namespace API
                 options.UseSqlServer(connectionString));
 
             // Configure AppSettings for dependency injection
-            builder.Services.Configure<AppSettings>(options => {
+            builder.Services.Configure<AppSettings>(options =>
+            {
                 options.ConnectionString = connectionString;
             });
 

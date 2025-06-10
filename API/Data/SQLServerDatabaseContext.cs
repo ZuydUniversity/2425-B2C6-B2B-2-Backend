@@ -1,7 +1,7 @@
 ﻿using API.Helpers;
+using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using API.Models;
 
 namespace API.Data
 {
@@ -13,7 +13,6 @@ namespace API.Data
         public DbSet<Order> Order { get; set; }
         public DbSet<Product> Product { get; set; }
         public DbSet<Suppliers> Suppliers { get; set; }
-
         public SQLServerDatabaseContext(DbContextOptions options, IOptions<AppSettings> appSettings) : base(options)
         {
             _appSettings = appSettings;

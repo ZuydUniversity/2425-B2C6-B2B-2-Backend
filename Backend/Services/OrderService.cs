@@ -1,5 +1,4 @@
 using Backend.Models;
-using System.Net.Http.Json;
 
 namespace Backend.Services
 {

@@ -7,17 +7,33 @@ namespace API.Models
     public class Order
     {
         public int Id { get; set; }
-        public Customer? Customer { get; set; }
-        public int CustomerId { get; set; } // Foreign key to Customer
-        public Product? Product { get; set; }
-        public int ProductId { get; set; } // Foreign key to Product
-        public int Quantity { get; set; }
-        [Precision(11, 2)]
-        public decimal TotalPrice { get; set; }
-        public string Status { get; set; } // e.g., "Pending", "Shipped", "Delivered"
-        public DateTime OrderDate { get; set; }
-        public DateTime? ShippedDate { get; set; } // Nullable in case the order hasn't been shipped yet
-        public DateTime? DeliveredDate { get; set; } // Nullable in case the order hasn't been delivered yet
 
+        [Required]
+        public int CustomerId { get; set; }
+
+        [Required]
+        public int ProductId { get; set; }
+
+        [Range(1, 3, ErrorMessage = "Aantal moet tussen 1 en 3 liggen.")]
+        public int Quantity { get; set; }
+
+        [Required]
+        public decimal TotalPrice { get; set; }
+
+        [Required]
+        [MaxLength(20)]
+        public string Status { get; set; } = "Pending"; // Pending, Approved, Rejected, Delivered
+
+        [Required]
+        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+
+        public DateTime? ApprovedDate { get; set; }
+        public DateTime? RejectedDate { get; set; }
+        public DateTime? DeliveredDate { get; set; }
+
+        public string? Comment { get; set; } // Optional message from account manager
+
+        public Customer? Customer { get; set; }
+        public Product? Product { get; set; }
     }
 }

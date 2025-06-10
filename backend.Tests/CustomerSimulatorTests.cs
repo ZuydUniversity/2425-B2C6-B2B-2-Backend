@@ -1,10 +1,6 @@
-﻿using System;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
-using Backend.Models;
+﻿using Backend.Models;
 using Backend.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace backend.Tests

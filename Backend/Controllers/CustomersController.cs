@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Models;
-using Data;
+﻿using Data;
+using Microsoft.AspNetCore.Mvc;
 using Backend.Models;
-using System.Runtime.InteropServices;
 
-namespace Controllers
+
+namespace Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

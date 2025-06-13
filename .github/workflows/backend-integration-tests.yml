@@ -1,4 +1,4 @@
-name: Build and Integration Tests with Coverage
+name: CI/CD Pipeline
 
 on:
   push:

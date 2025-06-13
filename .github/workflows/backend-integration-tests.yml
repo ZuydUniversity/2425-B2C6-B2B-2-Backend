@@ -46,8 +46,17 @@ jobs:
       - name: Install ReportGenerator
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
+      - name: Start test timer
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - name: Run tests and collect coverage
         run: dotnet test backend.Tests/backend.Tests.csproj --configuration Release --collect:"XPlat Code Coverage" --logger "trx"
+
+      - name: End test timer and log duration
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          echo "Test duration: $DURATION seconds"
 
       - name: Generate HTML coverage report
         run: reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage-report -reporttypes:Html

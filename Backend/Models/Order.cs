@@ -28,6 +28,14 @@ namespace Backend.Models
 
         public Customer? Customer { get; set; }
         public Product? Product { get; set; }
+
+        public string? OrderType { get; set; }
+        public bool IsSignedByInkoop { get; set; }
+        public bool IsSignedByAccountmanager { get; set; }
+        public bool ForwardedToSupplier { get; set; }
+        public string? PicklistStatus { get; set; }
+        public string? RejectionReason { get; set; }
+        public bool RequiresApproval => TotalPrice > 50000;
     }
 }
 

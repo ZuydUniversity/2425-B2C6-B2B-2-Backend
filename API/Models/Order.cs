@@ -44,7 +44,6 @@ namespace API.Models
         // Computed property (niet in database opgeslagen)
         public bool RequiresApproval => TotalPrice > 50000;
 
-        // Navigatie-eigenschappen
         public Customer? Customer { get; set; }
         public Product? Product { get; set; }
     }

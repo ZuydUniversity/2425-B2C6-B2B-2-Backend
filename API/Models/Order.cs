@@ -33,6 +33,18 @@ namespace API.Models
 
         public string? Comment { get; set; } // Optional message from account manager
 
+        // Nieuw toegevoegde velden voor workflow
+        public string? OrderType { get; set; } // A, B, C (Picklist)
+        public bool IsSignedByInkoop { get; set; }
+        public bool IsSignedByAccountmanager { get; set; }
+        public bool ForwardedToSupplier { get; set; }
+        public string? PicklistStatus { get; set; }
+        public string? RejectionReason { get; set; }
+
+        // Computed property (niet in database opgeslagen)
+        public bool RequiresApproval => TotalPrice > 50000;
+
+        // Navigatie-eigenschappen
         public Customer? Customer { get; set; }
         public Product? Product { get; set; }
     }

@@ -9,6 +9,10 @@ namespace API.Data
     {
         private readonly IOptions<AppSettings> _appSettings;
 
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public DbSet<ApprovalForm> ApprovalForms { get; set; }
+        public DbSet<RejectionForm> RejectionForms { get; set; }
+        public DbSet<Picklist> Picklists { get; set; }
         public DbSet<Customer> Customer { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<Product> Product { get; set; }

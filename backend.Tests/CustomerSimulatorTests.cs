@@ -1,8 +1,6 @@
-﻿using Backend.Models;
-using Backend.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -10,32 +8,26 @@ namespace backend.Tests
 {
     public class CustomerSimulatorTests
     {
-        private readonly ServiceProvider _services;
+        private readonly HttpClient _httpClient;
         private readonly ITestOutputHelper _output;
 
         public CustomerSimulatorTests(ITestOutputHelper output)
         {
             _output = output;
 
-            var sc = new ServiceCollection();
-
-            // Configure real API
-            sc.AddHttpClient<OrderService>(c =>
+            _httpClient = new HttpClient
             {
-                c.BaseAddress = new Uri("http://b2b2buildingblocks.westeurope.cloudapp.azure.com:8080/");
-                c.Timeout = TimeSpan.FromMinutes(3); // verhoogde timeout
-            });
+                BaseAddress = new Uri("http://b2b2buildingblocks.westeurope.cloudapp.azure.com:8080/")
+            };
 
-            _services = sc.BuildServiceProvider();
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         [Fact]
         public async Task Full_Order_Creation_And_Logging_Flow_Works()
         {
-            var orderService = _services.GetRequiredService<OrderService>();
-
-            // 1. Create order
-            var testOrder = new Order
+            // 1. Maak een order via API
+            var testOrder = new
             {
                 CustomerId = 1,
                 ProductId = 1,
@@ -45,34 +37,41 @@ namespace backend.Tests
                 OrderDate = DateTime.UtcNow
             };
 
-            _output.WriteLine($"[START] Order aanmaken voor CustomerId={testOrder.CustomerId}");
+            var json = JsonConvert.SerializeObject(testOrder);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var createdOrder = await orderService.CreateAndReturnAsync(testOrder);
+            _output.WriteLine("[START] Order aanmaken via API");
+            var response = await _httpClient.PostAsync("api/Orders", content);
+            Assert.True(response.IsSuccessStatusCode, $"POST mislukt: {response.StatusCode}");
 
-            Assert.NotNull(createdOrder);
-            Assert.True(createdOrder.Id > 0);
-            _output.WriteLine($"[OK] Order aangemaakt met ID={createdOrder.Id}");
+            var responseBody = await response.Content.ReadAsStringAsync();
+            dynamic createdOrder = JsonConvert.DeserializeObject(responseBody);
+            int createdOrderId = createdOrder.id;
 
-            // 2. Verify eventlog (optioneel)
-            using var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri("http://b2b2buildingblocks.westeurope.cloudapp.azure.com:8080/")
-            };
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            Assert.True(createdOrderId > 0, "Order ID ongeldig");
+            _output.WriteLine($"[OK] Order aangemaakt met ID={createdOrderId}");
 
-            var logResponse = await httpClient.GetAsync("api/ProcessMining/log");
+            // 2. Check eventlog voor aanmaak
+            var logResponse = await _httpClient.GetAsync("api/ProcessMining/log");
             Assert.True(logResponse.IsSuccessStatusCode, "Eventlog-opvraag mislukt");
 
             var logJson = await logResponse.Content.ReadAsStringAsync();
             var logEntries = JsonConvert.DeserializeObject<List<dynamic>>(logJson);
 
-            var createdLog = logEntries.FirstOrDefault(e => (int)e.caseId == createdOrder.Id && ((string)e.activity).Contains("aangemaakt"));
-            Assert.NotNull(createdLog);
-            _output.WriteLine($"[LOG OK] EventLog bevat aanmaakvermelding voor Order {createdOrder.Id}");
+            var log = logEntries.FirstOrDefault(e => (int)e.caseId == createdOrderId && ((string)e.activity).Contains("aangemaakt"));
+            Assert.NotNull(log);
+            _output.WriteLine($"[LOG OK] EventLog bevat aanmaakvermelding voor Order {createdOrderId}");
 
-            // 3. Delete order
-            await orderService.DeleteAsync(createdOrder.Id);
-            _output.WriteLine($"[CLEANUP] Order {createdOrder.Id} verwijderd");
+            // 3. Delete de order via API (met logging van foutresponse)
+            var deleteResponse = await _httpClient.DeleteAsync($"api/Orders/{createdOrderId}");
+            if (!deleteResponse.IsSuccessStatusCode)
+            {
+                var errorContent = await deleteResponse.Content.ReadAsStringAsync();
+                throw new Exception($"DELETE mislukt: {deleteResponse.StatusCode} - {errorContent}");
+            }
+            _output.WriteLine($"[CLEANUP] Order {createdOrderId} verwijderd via API");
         }
+
     }
 }
+

@@ -24,11 +24,12 @@ namespace Backend.Services
             return await response.Content.ReadFromJsonAsync<Order>();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteOrder(int id)
         {
             var response = await _http.DeleteAsync($"api/Orders/{id}");
             response.EnsureSuccessStatusCode();
         }
+
 
 
 

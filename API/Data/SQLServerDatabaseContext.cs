@@ -33,5 +33,23 @@ namespace API.Data
 
             base.OnConfiguring(optionsBuilder);
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Order>()
+                .Property(o => o.TotalPrice)
+                .HasPrecision(18, 2);
+
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<EventLog>()
+                .HasOne(e => e.Order)
+                .WithMany(o => o.EventLogs)
+                .HasForeignKey(e => e.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+        }
+
     }
 }

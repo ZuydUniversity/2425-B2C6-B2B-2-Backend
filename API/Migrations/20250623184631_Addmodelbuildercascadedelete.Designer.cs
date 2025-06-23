@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SQLServerDatabaseContext))]
-    partial class SQLServerDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250623184631_Addmodelbuildercascadedelete")]
+    partial class Addmodelbuildercascadedelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -343,7 +346,7 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.EventLog", b =>
                 {
                     b.HasOne("API.Models.Order", "Order")
-                        .WithMany("EventLogs")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -395,11 +398,6 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.Customer", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("API.Models.Order", b =>
-                {
-                    b.Navigation("EventLogs");
                 });
 #pragma warning restore 612, 618
         }

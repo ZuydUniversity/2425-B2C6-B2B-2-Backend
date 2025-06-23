@@ -41,6 +41,13 @@ namespace API.Data
                 .HasPrecision(18, 2);
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<EventLog>()
+                .HasOne(e => e.Order)
+                .WithMany()
+                .HasForeignKey(e => e.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
 
     }

@@ -38,7 +38,6 @@ namespace API.Controllers
         }
 
         // PUT: api/Orders/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder(int id, Order order)
         {
@@ -57,6 +56,16 @@ namespace API.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+
+                // Process mining log
+                _context.EventLogs.Add(new EventLog
+                {
+                    OrderId = order.Id,
+                    Timestamp = DateTime.UtcNow,
+                    Activity = "Order aangepast",
+                    Details = $"Order ID {order.Id} aangepast door gebruiker of systeem"
+                });
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -74,7 +83,6 @@ namespace API.Controllers
         }
 
         // POST: api/Orders
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
@@ -91,6 +99,16 @@ namespace API.Controllers
             _context.Order.Add(order);
             await _context.SaveChangesAsync();
 
+            // Process mining log
+            _context.EventLogs.Add(new EventLog
+            {
+                OrderId = order.Id,
+                Timestamp = DateTime.UtcNow,
+                Activity = "Order aangemaakt",
+                Details = $"Nieuwe order ID {order.Id} voor klant {order.CustomerId}, product {order.ProductId}, aantal {order.Quantity}"
+            });
+            await _context.SaveChangesAsync();
+
             return CreatedAtAction("GetOrder", new { id = order.Id }, order);
         }
 
@@ -105,6 +123,16 @@ namespace API.Controllers
             }
 
             _context.Order.Remove(order);
+            await _context.SaveChangesAsync();
+
+            // Process mining log
+            _context.EventLogs.Add(new EventLog
+            {
+                OrderId = order.Id,
+                Timestamp = DateTime.UtcNow,
+                Activity = "Order verwijderd",
+                Details = $"Order ID {order.Id} verwijderd door gebruiker of systeem"
+            });
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -136,3 +164,4 @@ namespace API.Controllers
         }
     }
 }
+

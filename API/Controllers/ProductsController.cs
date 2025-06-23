@@ -38,7 +38,6 @@ namespace API.Controllers
         }
 
         // PUT: api/Products/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
@@ -51,6 +50,16 @@ namespace API.Controllers
 
             try
             {
+                await _context.SaveChangesAsync();
+
+                // Process mining log
+                _context.EventLogs.Add(new EventLog
+                {
+                    OrderId = 0,
+                    Timestamp = DateTime.UtcNow,
+                    Activity = "Product aangepast",
+                    Details = $"Product ID {product.Id} aangepast: {product.Name}"
+                });
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -69,11 +78,20 @@ namespace API.Controllers
         }
 
         // POST: api/Products
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
             _context.Product.Add(product);
+            await _context.SaveChangesAsync();
+
+            // Process mining log
+            _context.EventLogs.Add(new EventLog
+            {
+                OrderId = 0,
+                Timestamp = DateTime.UtcNow,
+                Activity = "Product aangemaakt",
+                Details = $"Nieuw product toegevoegd: {product.Name} (ID: {product.Id})"
+            });
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetProduct", new { id = product.Id }, product);
@@ -90,6 +108,16 @@ namespace API.Controllers
             }
 
             _context.Product.Remove(product);
+            await _context.SaveChangesAsync();
+
+            // Process mining log
+            _context.EventLogs.Add(new EventLog
+            {
+                OrderId = 0,
+                Timestamp = DateTime.UtcNow,
+                Activity = "Product verwijderd",
+                Details = $"Product ID {product.Id} verwijderd: {product.Name}"
+            });
             await _context.SaveChangesAsync();
 
             return NoContent();

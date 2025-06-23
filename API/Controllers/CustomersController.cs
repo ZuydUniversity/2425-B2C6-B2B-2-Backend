@@ -38,7 +38,6 @@ namespace API.Controllers
         }
 
         // PUT: api/Customers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomer(int id, Customer customer)
         {
@@ -51,6 +50,16 @@ namespace API.Controllers
 
             try
             {
+                await _context.SaveChangesAsync();
+
+                // Process mining log
+                _context.EventLogs.Add(new EventLog
+                {
+                    OrderId = 0,
+                    Timestamp = DateTime.UtcNow,
+                    Activity = "Klantgegevens gewijzigd",
+                    Details = $"Customer {customer.Username} (ID: {customer.Id}) aangepast"
+                });
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -69,7 +78,6 @@ namespace API.Controllers
         }
 
         // POST: api/Customers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
@@ -86,6 +94,16 @@ namespace API.Controllers
             _context.Customer.Add(customer);
             try
             {
+                await _context.SaveChangesAsync();
+
+                // Process mining log
+                _context.EventLogs.Add(new EventLog
+                {
+                    OrderId = 0,
+                    Timestamp = DateTime.UtcNow,
+                    Activity = "Klant aangemaakt",
+                    Details = $"Nieuwe klant {customer.Username} (ID: {customer.Id}) geregistreerd"
+                });
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
@@ -116,9 +134,18 @@ namespace API.Controllers
             _context.Customer.Remove(customer);
             await _context.SaveChangesAsync();
 
+            // Process mining log
+            _context.EventLogs.Add(new EventLog
+            {
+                OrderId = 0,
+                Timestamp = DateTime.UtcNow,
+                Activity = "Klant verwijderd",
+                Details = $"Klant {customer.Username} verwijderd uit het systeem"
+            });
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
-
 
         private bool CustomerExists(string username)
         {

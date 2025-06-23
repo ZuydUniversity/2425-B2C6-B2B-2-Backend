@@ -30,6 +30,17 @@ public class RejectionFormsController : ControllerBase
     {
         _context.RejectionForms.Add(item);
         await _context.SaveChangesAsync();
+
+        // Process mining log
+        _context.EventLogs.Add(new EventLog
+        {
+            OrderId = item.OrderId,
+            Timestamp = DateTime.UtcNow,
+            Activity = "Order afgekeurd",
+            Details = $"RejectionForm ID {item.Id} voor Order {item.OrderId} aangemaakt met reden: {item.Reason}"
+        });
+        await _context.SaveChangesAsync();
+
         return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
     }
 
@@ -37,8 +48,20 @@ public class RejectionFormsController : ControllerBase
     public async Task<IActionResult> Put(int id, RejectionForm item)
     {
         if (id != item.Id) return BadRequest();
+
         _context.Entry(item).State = EntityState.Modified;
         await _context.SaveChangesAsync();
+
+        // Process mining log
+        _context.EventLogs.Add(new EventLog
+        {
+            OrderId = item.OrderId,
+            Timestamp = DateTime.UtcNow,
+            Activity = "Afkeuring aangepast",
+            Details = $"RejectionForm ID {item.Id} aangepast voor Order {item.OrderId}"
+        });
+        await _context.SaveChangesAsync();
+
         return NoContent();
     }
 
@@ -47,8 +70,20 @@ public class RejectionFormsController : ControllerBase
     {
         var item = await _context.RejectionForms.FindAsync(id);
         if (item == null) return NotFound();
+
         _context.RejectionForms.Remove(item);
         await _context.SaveChangesAsync();
+
+        // Process mining log
+        _context.EventLogs.Add(new EventLog
+        {
+            OrderId = item.OrderId,
+            Timestamp = DateTime.UtcNow,
+            Activity = "Afkeuring verwijderd",
+            Details = $"RejectionForm ID {item.Id} verwijderd voor Order {item.OrderId}"
+        });
+        await _context.SaveChangesAsync();
+
         return NoContent();
     }
 }

@@ -113,13 +113,13 @@ namespace API.Controllers
         {
             var order = await _context.Order.FindAsync(id);
             if (order == null)
+            {
                 return NotFound();
+            }
 
             try
             {
-                _context.Order.Remove(order);
-                await _context.SaveChangesAsync();
-
+                // Eerst loggen vóór verwijderen
                 _context.EventLogs.Add(new EventLog
                 {
                     OrderId = order.Id,
@@ -127,7 +127,10 @@ namespace API.Controllers
                     Activity = "Order verwijderd",
                     Details = $"Order ID {order.Id} verwijderd door gebruiker of systeem"
                 });
+                await _context.SaveChangesAsync();
 
+                // Daarna verwijderen
+                _context.Order.Remove(order);
                 await _context.SaveChangesAsync();
 
                 return NoContent();
@@ -138,6 +141,7 @@ namespace API.Controllers
                 return StatusCode(500, $"Interne fout bij verwijderen van order {id}");
             }
         }
+
 
         private bool OrderExists(int id)
         {

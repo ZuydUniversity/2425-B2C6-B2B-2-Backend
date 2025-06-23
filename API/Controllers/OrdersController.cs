@@ -122,21 +122,30 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            _context.Order.Remove(order);
-            await _context.SaveChangesAsync();
-
-            // Process mining log
-            _context.EventLogs.Add(new EventLog
+            try
             {
-                OrderId = order.Id,
-                Timestamp = DateTime.UtcNow,
-                Activity = "Order verwijderd",
-                Details = $"Order ID {order.Id} verwijderd door gebruiker of systeem"
-            });
-            await _context.SaveChangesAsync();
+                _context.Order.Remove(order);
+                await _context.SaveChangesAsync();
 
-            return NoContent();
+                // Process mining log
+                _context.EventLogs.Add(new EventLog
+                {
+                    OrderId = order.Id,
+                    Timestamp = DateTime.UtcNow,
+                    Activity = "Order verwijderd",
+                    Details = $"Order ID {order.Id} verwijderd door gebruiker of systeem"
+                });
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Verwijderen van order {id} mislukt: {ex.Message}");
+                return StatusCode(500, $"Interne fout bij verwijderen van order {id}");
+            }
         }
+
 
         private bool OrderExists(int id)
         {

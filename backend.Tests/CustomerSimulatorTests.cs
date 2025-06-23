@@ -24,6 +24,7 @@ namespace backend.Tests
         }
 
         [Fact]
+        [Fact]
         public async Task Full_Order_Creation_And_Logging_Flow_Works()
         {
             // 1. Maak een order via API
@@ -62,11 +63,16 @@ namespace backend.Tests
             Assert.NotNull(log);
             _output.WriteLine($"[LOG OK] EventLog bevat aanmaakvermelding voor Order {createdOrderId}");
 
-            // 3. Delete de order via API
+            // 3. Delete de order via API (met logging van foutresponse)
             var deleteResponse = await _httpClient.DeleteAsync($"api/Orders/{createdOrderId}");
-            Assert.True(deleteResponse.IsSuccessStatusCode, $"DELETE mislukt: {deleteResponse.StatusCode}");
+            if (!deleteResponse.IsSuccessStatusCode)
+            {
+                var errorContent = await deleteResponse.Content.ReadAsStringAsync();
+                throw new Exception($"DELETE mislukt: {deleteResponse.StatusCode} - {errorContent}");
+            }
             _output.WriteLine($"[CLEANUP] Order {createdOrderId} verwijderd via API");
         }
+
     }
 }
 

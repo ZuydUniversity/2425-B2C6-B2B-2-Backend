@@ -71,7 +71,7 @@ namespace backend.Tests
             _output.WriteLine($"[LOG OK] EventLog bevat aanmaakvermelding voor Order {createdOrder.Id}");
 
             // 3. Delete order
-            await orderService.DeleteAsync(createdOrder.Id);
+            await orderService.DeleteOrder(createdOrder.Id);
             _output.WriteLine($"[CLEANUP] Order {createdOrder.Id} verwijderd");
         }
     }

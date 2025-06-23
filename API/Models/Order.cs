@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace API.Models
 {
@@ -42,6 +43,7 @@ namespace API.Models
         public string? RejectionReason { get; set; }
 
         // Computed property (niet in database opgeslagen)
+        [JsonIgnore]
         public bool RequiresApproval => TotalPrice > 50000;
 
         public Customer? Customer { get; set; }

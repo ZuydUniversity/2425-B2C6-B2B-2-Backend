@@ -44,9 +44,10 @@ namespace API.Data
 
             modelBuilder.Entity<EventLog>()
                 .HasOne(e => e.Order)
-                .WithMany()
+                .WithMany(o => o.EventLogs)
                 .HasForeignKey(e => e.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
+
 
         }
 

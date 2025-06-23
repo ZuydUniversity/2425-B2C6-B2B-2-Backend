@@ -30,9 +30,7 @@ namespace API.Controllers
             var order = await _context.Order.FindAsync(id);
 
             if (order == null)
-            {
                 return NotFound();
-            }
 
             return order;
         }
@@ -42,14 +40,10 @@ namespace API.Controllers
         public async Task<IActionResult> PutOrder(int id, Order order)
         {
             if (id != order.Id)
-            {
                 return BadRequest();
-            }
 
             if (!CustomerExists(order.CustomerId) || !ProductExists(order.ProductId))
-            {
                 return BadRequest("Invalid Customer or Product ID.");
-            }
 
             _context.Entry(order).State = EntityState.Modified;
 
@@ -57,7 +51,6 @@ namespace API.Controllers
             {
                 await _context.SaveChangesAsync();
 
-                // Process mining log
                 _context.EventLogs.Add(new EventLog
                 {
                     OrderId = order.Id,
@@ -70,16 +63,12 @@ namespace API.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!OrderExists(id))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            return CreatedAtAction("GetOrder", new { id = order.Id }, new { order.Id });
         }
 
         // POST: api/Orders
@@ -87,29 +76,35 @@ namespace API.Controllers
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
             if (!CustomerExists(order.CustomerId) || !ProductExists(order.ProductId))
-            {
                 return BadRequest("Invalid Customer or Product ID.");
-            }
 
             if (order.Quantity <= 0)
-            {
                 return BadRequest("Quantity must be greater than zero.");
-            }
 
-            _context.Order.Add(order);
-            await _context.SaveChangesAsync();
-
-            // Process mining log
-            _context.EventLogs.Add(new EventLog
+            try
             {
-                OrderId = order.Id,
-                Timestamp = DateTime.UtcNow,
-                Activity = "Order aangemaakt",
-                Details = $"Nieuwe order ID {order.Id} voor klant {order.CustomerId}, product {order.ProductId}, aantal {order.Quantity}"
-            });
-            await _context.SaveChangesAsync();
+                _context.Order.Add(order);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+                Console.WriteLine($"[DEBUG] Order toegevoegd met ID: {order.Id}");
+
+                _context.EventLogs.Add(new EventLog
+                {
+                    OrderId = order.Id,
+                    Timestamp = DateTime.UtcNow,
+                    Activity = "Order aangemaakt",
+                    Details = $"Nieuwe order ID {order.Id} voor klant {order.CustomerId}, product {order.ProductId}, aantal {order.Quantity}"
+                });
+
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetOrder", new { id = order.Id }, new { order.Id });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] POST Order mislukt: {ex.Message}");
+                return StatusCode(500, "Interne serverfout bij aanmaken order.");
+            }
         }
 
         // DELETE: api/Orders/5
@@ -118,16 +113,13 @@ namespace API.Controllers
         {
             var order = await _context.Order.FindAsync(id);
             if (order == null)
-            {
                 return NotFound();
-            }
 
             try
             {
                 _context.Order.Remove(order);
                 await _context.SaveChangesAsync();
 
-                // Process mining log
                 _context.EventLogs.Add(new EventLog
                 {
                     OrderId = order.Id,
@@ -135,6 +127,7 @@ namespace API.Controllers
                     Activity = "Order verwijderd",
                     Details = $"Order ID {order.Id} verwijderd door gebruiker of systeem"
                 });
+
                 await _context.SaveChangesAsync();
 
                 return NoContent();
@@ -145,7 +138,6 @@ namespace API.Controllers
                 return StatusCode(500, $"Interne fout bij verwijderen van order {id}");
             }
         }
-
 
         private bool OrderExists(int id)
         {
@@ -173,4 +165,3 @@ namespace API.Controllers
         }
     }
 }
-

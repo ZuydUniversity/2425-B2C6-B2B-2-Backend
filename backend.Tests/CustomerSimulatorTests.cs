@@ -24,7 +24,6 @@ namespace backend.Tests
         }
 
         [Fact]
-        [Fact]
         public async Task Full_Order_Creation_And_Logging_Flow_Works()
         {
             // 1. Maak een order via API

@@ -30,6 +30,17 @@ public class ApprovalFormsController : ControllerBase
     {
         _context.ApprovalForms.Add(item);
         await _context.SaveChangesAsync();
+
+        // Process mining logging
+        _context.EventLogs.Add(new EventLog
+        {
+            OrderId = item.OrderId,
+            Timestamp = DateTime.UtcNow,
+            Activity = "Order goedgekeurd",
+            Details = $"ApprovalForm ID: {item.Id} goedgekeurd op {item.DateApproved}"
+        });
+        await _context.SaveChangesAsync();
+
         return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
     }
 
@@ -37,8 +48,20 @@ public class ApprovalFormsController : ControllerBase
     public async Task<IActionResult> Put(int id, ApprovalForm item)
     {
         if (id != item.Id) return BadRequest();
+
         _context.Entry(item).State = EntityState.Modified;
         await _context.SaveChangesAsync();
+
+        // Process mining logging
+        _context.EventLogs.Add(new EventLog
+        {
+            OrderId = item.OrderId,
+            Timestamp = DateTime.UtcNow,
+            Activity = "Goedkeuringsformulier aangepast",
+            Details = $"ApprovalForm ID: {item.Id} bijgewerkt"
+        });
+        await _context.SaveChangesAsync();
+
         return NoContent();
     }
 
@@ -47,8 +70,20 @@ public class ApprovalFormsController : ControllerBase
     {
         var item = await _context.ApprovalForms.FindAsync(id);
         if (item == null) return NotFound();
+
         _context.ApprovalForms.Remove(item);
         await _context.SaveChangesAsync();
+
+        // Process mining logging
+        _context.EventLogs.Add(new EventLog
+        {
+            OrderId = item.OrderId,
+            Timestamp = DateTime.UtcNow,
+            Activity = "Goedkeuringsformulier verwijderd",
+            Details = $"ApprovalForm ID: {item.Id} verwijderd"
+        });
+        await _context.SaveChangesAsync();
+
         return NoContent();
     }
 }

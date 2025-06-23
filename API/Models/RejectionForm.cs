@@ -8,5 +8,7 @@
         public DateTime RejectionDate { get; set; }
 
         public PurchaseOrder PurchaseOrder { get; set; }
+        public int OrderId { get; set; }
+
     }
 }

@@ -17,6 +17,8 @@ namespace API.Data
         public DbSet<Order> Order { get; set; }
         public DbSet<Product> Product { get; set; }
         public DbSet<Suppliers> Suppliers { get; set; }
+        public DbSet<EventLog> EventLogs { get; set; }
+
         public SQLServerDatabaseContext(DbContextOptions options, IOptions<AppSettings> appSettings) : base(options)
         {
             _appSettings = appSettings;

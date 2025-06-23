@@ -38,7 +38,6 @@ namespace API.Controllers
         }
 
         // PUT: api/Suppliers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSuppliers(int id, Suppliers suppliers)
         {
@@ -51,6 +50,16 @@ namespace API.Controllers
 
             try
             {
+                await _context.SaveChangesAsync();
+
+                // Process mining log
+                _context.EventLogs.Add(new EventLog
+                {
+                    OrderId = 0,
+                    Timestamp = DateTime.UtcNow,
+                    Activity = "Leverancier aangepast",
+                    Details = $"Leverancier ID {suppliers.Id} aangepast: {suppliers.Name}"
+                });
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -69,11 +78,20 @@ namespace API.Controllers
         }
 
         // POST: api/Suppliers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Suppliers>> PostSuppliers(Suppliers suppliers)
         {
             _context.Suppliers.Add(suppliers);
+            await _context.SaveChangesAsync();
+
+            // Process mining log
+            _context.EventLogs.Add(new EventLog
+            {
+                OrderId = 0,
+                Timestamp = DateTime.UtcNow,
+                Activity = "Leverancier toegevoegd",
+                Details = $"Nieuwe leverancier toegevoegd: {suppliers.Name} (ID: {suppliers.Id})"
+            });
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetSuppliers", new { id = suppliers.Id }, suppliers);
@@ -90,6 +108,16 @@ namespace API.Controllers
             }
 
             _context.Suppliers.Remove(suppliers);
+            await _context.SaveChangesAsync();
+
+            // Process mining log
+            _context.EventLogs.Add(new EventLog
+            {
+                OrderId = 0,
+                Timestamp = DateTime.UtcNow,
+                Activity = "Leverancier verwijderd",
+                Details = $"Leverancier ID {suppliers.Id} verwijderd: {suppliers.Name}"
+            });
             await _context.SaveChangesAsync();
 
             return NoContent();

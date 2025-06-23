@@ -34,6 +34,17 @@ namespace API.Controllers
         {
             _context.PurchaseOrders.Add(order);
             await _context.SaveChangesAsync();
+
+            // Process mining log
+            _context.EventLogs.Add(new EventLog
+            {
+                OrderId = 0,
+                Timestamp = DateTime.UtcNow,
+                Activity = "Inkooporder aangemaakt",
+                Details = $"Inkooporder ID {order.Id} aangemaakt voor Product {order.ProductId} bij leverancier {order.SupplierId}, Aantal {order.Quantity}"
+            });
+            await _context.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetPurchaseOrder), new { id = order.Id }, order);
         }
 
@@ -43,6 +54,17 @@ namespace API.Controllers
             if (id != order.Id) return BadRequest();
             _context.Entry(order).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
+            // Process mining log
+            _context.EventLogs.Add(new EventLog
+            {
+                OrderId = 0,
+                Timestamp = DateTime.UtcNow,
+                Activity = "Inkooporder aangepast",
+                Details = $"Inkooporder ID {order.Id} gewijzigd voor leverancier {order.SupplierId}"
+            });
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
@@ -53,6 +75,17 @@ namespace API.Controllers
             if (order == null) return NotFound();
             _context.PurchaseOrders.Remove(order);
             await _context.SaveChangesAsync();
+
+            // Process mining log
+            _context.EventLogs.Add(new EventLog
+            {
+                OrderId = 0,
+                Timestamp = DateTime.UtcNow,
+                Activity = "Inkooporder verwijderd",
+                Details = $"Inkooporder ID {order.Id} verwijderd uit het systeem"
+            });
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
     }

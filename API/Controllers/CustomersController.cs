@@ -3,6 +3,9 @@ using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// API-controller voor het beheren van klanten.
+/// </summary>
 namespace API.Controllers
 {
     [Route("api/[controller]")]
@@ -11,19 +14,27 @@ namespace API.Controllers
     {
         private readonly SQLServerDatabaseContext _context;
 
+        /// <summary>
+        /// Constructor met dependency injection.
+        /// </summary>
         public CustomersController(SQLServerDatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: api/Customers
+        /// <summary>
+        /// Haalt alle klanten op.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomer()
         {
             return await _context.Customer.ToListAsync();
         }
 
-        // GET: api/Customers/5
+        /// <summary>
+        /// Haalt een klant op via ID.
+        /// </summary>
+        /// <param name="id">Klant-ID</param>
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
@@ -37,7 +48,11 @@ namespace API.Controllers
             return customer;
         }
 
-        // PUT: api/Customers/5
+        /// <summary>
+        /// Wijzigt klantgegevens.
+        /// </summary>
+        /// <param name="id">Klant-ID</param>
+        /// <param name="customer">Gewijzigde klantgegevens</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomer(int id, Customer customer)
         {
@@ -55,7 +70,7 @@ namespace API.Controllers
                 // Process mining log
                 _context.EventLogs.Add(new EventLog
                 {
-                    OrderId = 0,
+                    OrderId = null,
                     Timestamp = DateTime.UtcNow,
                     Activity = "Klantgegevens gewijzigd",
                     Details = $"Customer {customer.Username} (ID: {customer.Id}) aangepast"
@@ -77,7 +92,10 @@ namespace API.Controllers
             return CreatedAtAction("GetCustomer", new { id = customer.Username }, customer);
         }
 
-        // POST: api/Customers
+        /// <summary>
+        /// Voegt een nieuwe klant toe.
+        /// </summary>
+        /// <param name="customer">Nieuwe klant</param>
         [HttpPost]
         public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
@@ -96,10 +114,9 @@ namespace API.Controllers
             {
                 await _context.SaveChangesAsync();
 
-                // Process mining log
                 _context.EventLogs.Add(new EventLog
                 {
-                    OrderId = 0,
+                    OrderId = null,
                     Timestamp = DateTime.UtcNow,
                     Activity = "Klant aangemaakt",
                     Details = $"Nieuwe klant {customer.Username} (ID: {customer.Id}) geregistreerd"
@@ -121,7 +138,10 @@ namespace API.Controllers
             return CreatedAtAction("GetCustomer", new { id = customer.Username }, customer);
         }
 
-        // DELETE: api/Customers/5
+        /// <summary>
+        /// Verwijdert een klant.
+        /// </summary>
+        /// <param name="id">Klant-ID (string)</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(string id)
         {
@@ -134,10 +154,9 @@ namespace API.Controllers
             _context.Customer.Remove(customer);
             await _context.SaveChangesAsync();
 
-            // Process mining log
             _context.EventLogs.Add(new EventLog
             {
-                OrderId = 0,
+                OrderId = null,
                 Timestamp = DateTime.UtcNow,
                 Activity = "Klant verwijderd",
                 Details = $"Klant {customer.Username} verwijderd uit het systeem"
@@ -158,3 +177,4 @@ namespace API.Controllers
         }
     }
 }
+

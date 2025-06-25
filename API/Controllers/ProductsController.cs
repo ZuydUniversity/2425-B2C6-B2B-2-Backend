@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// Beheert productgegevens in het systeem.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -16,35 +19,36 @@ namespace API.Controllers
             _context = context;
         }
 
-        // GET: api/Products
+        /// <summary>
+        /// Haalt een lijst op van alle producten.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
         {
             return await _context.Product.ToListAsync();
         }
 
-        // GET: api/Products/5
+        /// <summary>
+        /// Haalt één specifiek product op aan de hand van zijn ID.
+        /// </summary>
+        /// <param name="id">Product ID</param>
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
             var product = await _context.Product.FindAsync(id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return product;
+            return product == null ? NotFound() : product;
         }
 
-        // PUT: api/Products/5
+        /// <summary>
+        /// Wijzigt een bestaand product.
+        /// </summary>
+        /// <param name="id">Product ID</param>
+        /// <param name="product">Bijgewerkte productgegevens</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
             if (id != product.Id)
-            {
                 return BadRequest();
-            }
 
             _context.Entry(product).State = EntityState.Modified;
 
@@ -52,10 +56,9 @@ namespace API.Controllers
             {
                 await _context.SaveChangesAsync();
 
-                // Process mining log
                 _context.EventLogs.Add(new EventLog
                 {
-                    OrderId = 0,
+                    OrderId = null,
                     Timestamp = DateTime.UtcNow,
                     Activity = "Product aangepast",
                     Details = $"Product ID {product.Id} aangepast: {product.Name}"
@@ -64,30 +67,26 @@ namespace API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                if (!ProductExists(id)) return NotFound();
+                throw;
             }
 
             return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
 
-        // POST: api/Products
+        /// <summary>
+        /// Voegt een nieuw product toe aan de database.
+        /// </summary>
+        /// <param name="product">Nieuwe productgegevens</param>
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
             _context.Product.Add(product);
             await _context.SaveChangesAsync();
 
-            // Process mining log
             _context.EventLogs.Add(new EventLog
             {
-                OrderId = 0,
+                OrderId = null,
                 Timestamp = DateTime.UtcNow,
                 Activity = "Product aangemaakt",
                 Details = $"Nieuw product toegevoegd: {product.Name} (ID: {product.Id})"
@@ -97,23 +96,22 @@ namespace API.Controllers
             return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
 
-        // DELETE: api/Products/5
+        /// <summary>
+        /// Verwijdert een product op basis van ID.
+        /// </summary>
+        /// <param name="id">Product ID</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _context.Product.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            if (product == null) return NotFound();
 
             _context.Product.Remove(product);
             await _context.SaveChangesAsync();
 
-            // Process mining log
             _context.EventLogs.Add(new EventLog
             {
-                OrderId = 0,
+                OrderId = null,
                 Timestamp = DateTime.UtcNow,
                 Activity = "Product verwijderd",
                 Details = $"Product ID {product.Id} verwijderd: {product.Name}"
@@ -129,3 +127,4 @@ namespace API.Controllers
         }
     }
 }
+

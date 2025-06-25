@@ -41,7 +41,8 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Expedition>> PostExpedition(Expedition expedition)
         {
-            _context.Expeditions.Add(expedition);
+            _context.
+                Expeditions.Add(expedition);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetExpedition), new { id = expedition.Id }, expedition);

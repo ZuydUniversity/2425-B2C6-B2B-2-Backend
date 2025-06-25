@@ -20,6 +20,7 @@ namespace API.Data
         public DbSet<EventLog> EventLogs { get; set; }
         public DbSet<ProductionLine> ProductionLines { get; set; }
         public DbSet<Expedition> Expeditions { get; set; }
+        public DbSet<Delivery> Delivery { get; set; }
 
 
         public SQLServerDatabaseContext(DbContextOptions options, IOptions<AppSettings> appSettings) : base(options)

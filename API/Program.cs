@@ -36,7 +36,7 @@ namespace API
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
-                {
+                {   
                     Title = "Building Blocks API",
                     Version = "v1",
                     Description = "Proces Mining & Orderbeheer API voor Building Blocks"
@@ -58,7 +58,7 @@ namespace API
             }
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
@@ -66,6 +66,7 @@ namespace API
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Building Blocks API v1");
                 });
             }
+
 
             app.UseAuthorization();
             app.MapControllers();

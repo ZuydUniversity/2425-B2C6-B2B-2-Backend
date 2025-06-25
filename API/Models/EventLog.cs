@@ -7,8 +7,7 @@ namespace API.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        public int OrderId { get; set; } // Case ID
+        public int? OrderId { get; set; } // Case ID
 
         [Required]
         public DateTime Timestamp { get; set; }

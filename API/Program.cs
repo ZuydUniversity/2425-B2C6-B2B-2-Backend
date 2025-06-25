@@ -1,6 +1,8 @@
 using API.Data;
 using API.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace API
 {
@@ -17,7 +19,6 @@ namespace API
                 .Replace("${DB_USER}", Environment.GetEnvironmentVariable("DB_USER") ?? "sa")
                 .Replace("${DB_PASSWORD}", Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "defaultpasswordwhichwillnotwork");
 
-
             // Add services to the container.
             builder.Services.AddDbContext<SQLServerDatabaseContext>(options =>
                 options.UseSqlServer(connectionString));
@@ -29,8 +30,23 @@ namespace API
             });
 
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+
+            // Add Swagger/OpenAPI support
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Building Blocks API",
+                    Version = "v1",
+                    Description = "Proces Mining & Orderbeheer API voor Building Blocks"
+                });
+
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
+            });
 
             var app = builder.Build();
 
@@ -44,14 +60,17 @@ namespace API
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Building Blocks API v1");
+                });
             }
 
             app.UseAuthorization();
-
             app.MapControllers();
-
             app.Run();
         }
     }
 }
+

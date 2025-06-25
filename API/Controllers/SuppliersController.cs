@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// Beheert leveranciers in het systeem.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class SuppliersController : ControllerBase
@@ -16,14 +19,19 @@ namespace API.Controllers
             _context = context;
         }
 
-        // GET: api/Suppliers
+        /// <summary>
+        /// Haalt alle leveranciers op.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Suppliers>>> GetSuppliers()
         {
             return await _context.Suppliers.ToListAsync();
         }
 
-        // GET: api/Suppliers/5
+        /// <summary>
+        /// Haalt een specifieke leverancier op.
+        /// </summary>
+        /// <param name="id">De ID van de leverancier</param>
         [HttpGet("{id}")]
         public async Task<ActionResult<Suppliers>> GetSuppliers(int id)
         {
@@ -37,7 +45,11 @@ namespace API.Controllers
             return suppliers;
         }
 
-        // PUT: api/Suppliers/5
+        /// <summary>
+        /// Wijzigt een bestaande leverancier.
+        /// </summary>
+        /// <param name="id">De ID van de leverancier</param>
+        /// <param name="suppliers">De gewijzigde leverancier</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSuppliers(int id, Suppliers suppliers)
         {
@@ -52,10 +64,9 @@ namespace API.Controllers
             {
                 await _context.SaveChangesAsync();
 
-                // Process mining log
                 _context.EventLogs.Add(new EventLog
                 {
-                    OrderId = 0,
+                    OrderId = null,
                     Timestamp = DateTime.UtcNow,
                     Activity = "Leverancier aangepast",
                     Details = $"Leverancier ID {suppliers.Id} aangepast: {suppliers.Name}"
@@ -77,17 +88,19 @@ namespace API.Controllers
             return CreatedAtAction("GetSuppliers", new { id = suppliers.Id }, suppliers);
         }
 
-        // POST: api/Suppliers
+        /// <summary>
+        /// Voegt een nieuwe leverancier toe.
+        /// </summary>
+        /// <param name="suppliers">De nieuwe leverancier</param>
         [HttpPost]
         public async Task<ActionResult<Suppliers>> PostSuppliers(Suppliers suppliers)
         {
             _context.Suppliers.Add(suppliers);
             await _context.SaveChangesAsync();
 
-            // Process mining log
             _context.EventLogs.Add(new EventLog
             {
-                OrderId = 0,
+                OrderId = null,
                 Timestamp = DateTime.UtcNow,
                 Activity = "Leverancier toegevoegd",
                 Details = $"Nieuwe leverancier toegevoegd: {suppliers.Name} (ID: {suppliers.Id})"
@@ -97,7 +110,10 @@ namespace API.Controllers
             return CreatedAtAction("GetSuppliers", new { id = suppliers.Id }, suppliers);
         }
 
-        // DELETE: api/Suppliers/5
+        /// <summary>
+        /// Verwijdert een leverancier.
+        /// </summary>
+        /// <param name="id">De ID van de leverancier</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSuppliers(int id)
         {
@@ -110,10 +126,9 @@ namespace API.Controllers
             _context.Suppliers.Remove(suppliers);
             await _context.SaveChangesAsync();
 
-            // Process mining log
             _context.EventLogs.Add(new EventLog
             {
-                OrderId = 0,
+                OrderId = null,
                 Timestamp = DateTime.UtcNow,
                 Activity = "Leverancier verwijderd",
                 Details = $"Leverancier ID {suppliers.Id} verwijderd: {suppliers.Name}"
@@ -129,3 +144,4 @@ namespace API.Controllers
         }
     }
 }
+

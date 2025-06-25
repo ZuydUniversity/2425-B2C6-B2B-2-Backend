@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// Beheert alle operaties rond bestellingen (Orders).
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
@@ -16,26 +19,31 @@ namespace API.Controllers
             _context = context;
         }
 
-        // GET: api/Orders
+        /// <summary>
+        /// Haalt alle orders op.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrder()
         {
             return await _context.Order.ToListAsync();
         }
 
-        // GET: api/Orders/5
+        /// <summary>
+        /// Haalt één specifieke order op via ID.
+        /// </summary>
+        /// <param name="id">Order-ID</param>
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
             var order = await _context.Order.FindAsync(id);
-
-            if (order == null)
-                return NotFound();
-
-            return order;
+            return order == null ? NotFound() : order;
         }
 
-        // PUT: api/Orders/5
+        /// <summary>
+        /// Wijzigt een bestaande order.
+        /// </summary>
+        /// <param name="id">Order-ID</param>
+        /// <param name="order">Gewijzigde order</param>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder(int id, Order order)
         {
@@ -71,7 +79,10 @@ namespace API.Controllers
             return CreatedAtAction("GetOrder", new { id = order.Id }, new { order.Id });
         }
 
-        // POST: api/Orders
+        /// <summary>
+        /// Maakt een nieuwe order aan.
+        /// </summary>
+        /// <param name="order">Nieuwe order</param>
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
@@ -107,19 +118,19 @@ namespace API.Controllers
             }
         }
 
-        // DELETE: api/Orders/5
+        /// <summary>
+        /// Verwijdert een bestaande order.
+        /// </summary>
+        /// <param name="id">Order-ID</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var order = await _context.Order.FindAsync(id);
             if (order == null)
-            {
                 return NotFound();
-            }
 
             try
             {
-                // Eerst loggen vóór verwijderen
                 _context.EventLogs.Add(new EventLog
                 {
                     OrderId = order.Id,
@@ -129,7 +140,6 @@ namespace API.Controllers
                 });
                 await _context.SaveChangesAsync();
 
-                // Daarna verwijderen
                 _context.Order.Remove(order);
                 await _context.SaveChangesAsync();
 
@@ -142,30 +152,20 @@ namespace API.Controllers
             }
         }
 
+        private bool OrderExists(int id) =>
+            _context.Order.Any(e => e.Id == id);
 
-        private bool OrderExists(int id)
-        {
-            return _context.Order.Any(e => e.Id == id);
-        }
+        private bool CustomerExists(string username) =>
+            _context.Customer.Any(e => e.Username == username);
 
-        private bool CustomerExists(string username)
-        {
-            return _context.Customer.Any(e => e.Username == username);
-        }
+        private bool CustomerExists(int id) =>
+            _context.Customer.Any(e => e.Id == id);
 
-        private bool CustomerExists(int id)
-        {
-            return _context.Customer.Any(e => e.Id == id);
-        }
+        private bool ProductExists(int id) =>
+            _context.Product.Any(e => e.Id == id);
 
-        private bool ProductExists(int id)
-        {
-            return _context.Product.Any(e => e.Id == id);
-        }
-
-        private bool SupplierExists(int id)
-        {
-            return _context.Suppliers.Any(e => e.Id == id);
-        }
+        private bool SupplierExists(int id) =>
+            _context.Suppliers.Any(e => e.Id == id);
     }
 }
+

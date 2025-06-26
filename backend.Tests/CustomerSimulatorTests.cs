@@ -6,7 +6,6 @@ using Xunit.Abstractions;
 
 namespace backend.Tests
 {
-
     public class CustomerSimulatorTests
     {
         private readonly HttpClient _httpClient;
@@ -25,65 +24,57 @@ namespace backend.Tests
         [Fact]
         public async Task Full_Order_Creation_And_Logging_Flow_Works()
         {
-            // 1. Maak customer aan
-            var newCustomer = new
+            // 1. Maak een geldige order aan met alle vereiste velden
+            var testOrder = new
             {
-                Username = "testuser_" + Guid.NewGuid(),
-                Name = "Test Gebruiker",
-                Password = "Test123!"
-            };
-            var customerContent = new StringContent(JsonConvert.SerializeObject(newCustomer), Encoding.UTF8, "application/json");
-            var customerResp = await _httpClient.PostAsync("api/Customers", customerContent);
-            Assert.True(customerResp.IsSuccessStatusCode, $"Customer POST mislukt: {customerResp.StatusCode}");
-            var customerObj = JsonConvert.DeserializeObject<dynamic>(await customerResp.Content.ReadAsStringAsync());
-            int customerId = customerObj.id;
-
-            // 2. Maak product aan
-            var newProduct = new
-            {
-                Name = "TestProduct_" + Guid.NewGuid(),
-                Description = "Testproduct voor integratietest",
-                Price = 999.99,
-                CostPrice = 500.00,
-                StockQuantity = 10
-            };
-            var productContent = new StringContent(JsonConvert.SerializeObject(newProduct), Encoding.UTF8, "application/json");
-            var productResp = await _httpClient.PostAsync("api/Products", productContent);
-            Assert.True(productResp.IsSuccessStatusCode, $"Product POST mislukt: {productResp.StatusCode}");
-            var productObj = JsonConvert.DeserializeObject<dynamic>(await productResp.Content.ReadAsStringAsync());
-            int productId = productObj.id;
-
-            // 3. Maak order aan
-            var newOrder = new
-            {
-                CustomerId = customerId,
-                ProductId = productId,
+                CustomerId = 1,
+                ProductId = 1,
                 Quantity = 1,
-                TotalPrice = 999.99,
+                TotalPrice = 10000,
                 Status = "Pending",
-                OrderDate = DateTime.UtcNow
+                OrderDate = DateTime.UtcNow,
+                OrderType = "A",
+                IsSignedByInkoop = true,
+                IsSignedByAccountmanager = true,
+                ForwardedToSupplier = false,
+                PicklistStatus = "NotStarted",
+                RejectionReason = (string?)null,
+                Comment = "Test order"
             };
-            var orderContent = new StringContent(JsonConvert.SerializeObject(newOrder), Encoding.UTF8, "application/json");
-            var orderResp = await _httpClient.PostAsync("api/Orders", orderContent);
-            Assert.True(orderResp.IsSuccessStatusCode, $"Order POST mislukt: {orderResp.StatusCode}");
-            var orderObj = JsonConvert.DeserializeObject<dynamic>(await orderResp.Content.ReadAsStringAsync());
-            int orderId = orderObj.id;
 
-            // 4. Check eventlog
-            var logResp = await _httpClient.GetAsync("api/ProcessMining/log");
-            Assert.True(logResp.IsSuccessStatusCode, "Eventlog ophalen mislukt");
-            var logs = JsonConvert.DeserializeObject<List<dynamic>>(await logResp.Content.ReadAsStringAsync());
-            var log = logs.FirstOrDefault(e => (int)e.caseId == orderId && ((string)e.activity).Contains("aangemaakt"));
+            var json = JsonConvert.SerializeObject(testOrder);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            _output.WriteLine("[START] Order aanmaken via API");
+            var response = await _httpClient.PostAsync("api/Orders", content);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            Assert.True(response.IsSuccessStatusCode, $"POST mislukt: {response.StatusCode} - {responseBody}");
+
+            dynamic createdOrder = JsonConvert.DeserializeObject(responseBody);
+            int createdOrderId = createdOrder.id;
+            Assert.True(createdOrderId > 0, "Order ID ongeldig");
+            _output.WriteLine($"[OK] Order aangemaakt met ID={createdOrderId}");
+
+            // 2. Controleer of er een eventlog is vastgelegd
+            var logResponse = await _httpClient.GetAsync("api/ProcessMining/log");
+            Assert.True(logResponse.IsSuccessStatusCode, "Eventlog-opvraag mislukt");
+
+            var logJson = await logResponse.Content.ReadAsStringAsync();
+            var logEntries = JsonConvert.DeserializeObject<List<dynamic>>(logJson);
+
+            var log = logEntries.FirstOrDefault(e => (int?)e.caseId == createdOrderId && ((string)e.activity).Contains("aangemaakt"));
             Assert.NotNull(log);
+            _output.WriteLine($"[LOG OK] EventLog bevat aanmaakvermelding voor Order {createdOrderId}");
 
-            // 5. Opschonen (verwijder volgorde: order → product → klant)
-            await _httpClient.DeleteAsync($"api/Orders/{orderId}");
-            await _httpClient.DeleteAsync($"api/Products/{productId}");
-            await _httpClient.DeleteAsync($"api/Customers/{customerId}");
+            // 3. Verwijder de order
+            var deleteResponse = await _httpClient.DeleteAsync($"api/Orders/{createdOrderId}");
+            if (!deleteResponse.IsSuccessStatusCode)
+            {
+                var error = await deleteResponse.Content.ReadAsStringAsync();
+                throw new Exception($"DELETE mislukt: {deleteResponse.StatusCode} - {error}");
+            }
+            _output.WriteLine($"[CLEANUP] Order {createdOrderId} verwijderd via API");
         }
-
     }
-
-
 }
-

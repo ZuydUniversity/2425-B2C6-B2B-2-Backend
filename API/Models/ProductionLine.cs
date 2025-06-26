@@ -2,8 +2,8 @@
 {
     public class ProductionLine
     {
-        public int ProductionLineId { get; set; }
-        public string LineName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
         public bool IsActive { get; set; }
     }
 }

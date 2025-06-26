@@ -23,7 +23,7 @@ namespace API.Models
 
         [Required]
         [MaxLength(20)]
-        public string Status { get; set; } = "Pending"; // Pending, Approved, Rejected, Delivered
+        public string Status { get; set; } = "Pending"; // Pending, Approved, Rejected, Delivered, Planned, Waiting on Materials
 
         [Required]
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
@@ -34,13 +34,9 @@ namespace API.Models
 
         public string? Comment { get; set; } // Optional message from account manager
 
-        // Nieuw toegevoegde velden voor workflow
-        public string? OrderType { get; set; } // A, B, C (Picklist)
-        public bool IsSignedByInkoop { get; set; }
-        public bool IsSignedByAccountmanager { get; set; }
-        public bool ForwardedToSupplier { get; set; }
-        public string? PicklistStatus { get; set; }
-        public string? RejectionReason { get; set; }
+        public bool Approved { get; set; } = false; // Geeft aan dat de order is goedgekeurd door de account manager
+        public bool ForwardedToSupplier { get; set; } = false; // Geeft aan dat de order is doorgestuurd naar de leverancier voor onderdelen
+        public string? RejectionReason { get; set; } // Reden voor afwijzing van de order
 
         // Computed property (niet in database opgeslagen)
         [JsonIgnore]
@@ -49,9 +45,5 @@ namespace API.Models
         public Customer? Customer { get; set; }
         public Product? Product { get; set; }
         public List<EventLog> EventLogs { get; set; } = new();
-
-        public ProductionLine? ProductionLine { get; set; } // Relatie met Productie lijn
-        public AccountManager? AccountManager { get; set; } // Relatie met Account Manager
-
     }
 }

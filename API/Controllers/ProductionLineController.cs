@@ -30,10 +30,10 @@ public class ProductionLineController : ControllerBase
         {
             Timestamp = DateTime.UtcNow,
             Activity = "Productielijn geregistreerd",
-            Details = $"Productielijn: {item.LineName} actief: {item.IsActive}"
+            Details = $"Productielijn: {item.Name} actief: {item.IsActive}"
         });
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(Post), new { id = item.ProductionLineId }, item);
+        return CreatedAtAction(nameof(Post), new { id = item.Id }, item);
     }
 }

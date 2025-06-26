@@ -10,20 +10,12 @@ namespace API.Data
         private readonly IOptions<AppSettings> _appSettings;
 
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
-        public DbSet<ApprovalForm> ApprovalForms { get; set; }
-        public DbSet<RejectionForm> RejectionForms { get; set; }
-        public DbSet<Picklist> Picklists { get; set; }
         public DbSet<Customer> Customer { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<Product> Product { get; set; }
-        public DbSet<Suppliers> Suppliers { get; set; }
         public DbSet<EventLog> EventLogs { get; set; }
         public DbSet<ProductionLine> ProductionLines { get; set; }
-        public DbSet<Expedition> Expeditions { get; set; }
-        public DbSet<Delivery> Delivery { get; set; }
-        public DbSet<PartsDelivery> PartsDelivery { get; set; }
         public DbSet<Planning> Planning { get; set; }
-        public DbSet<QualityControl> QualityControl { get; set; }
 
 
 
@@ -55,9 +47,6 @@ namespace API.Data
                 .WithMany(o => o.EventLogs)
                 .HasForeignKey(e => e.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-
         }
-
     }
 }

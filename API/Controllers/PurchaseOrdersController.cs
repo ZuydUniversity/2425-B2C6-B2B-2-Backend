@@ -54,7 +54,7 @@ namespace API.Controllers
                 OrderId = null,
                 Timestamp = DateTime.UtcNow,
                 Activity = "Inkooporder aangemaakt",
-                Details = $"Inkooporder ID {order.Id} aangemaakt voor Product {order.ProductId} bij leverancier {order.SupplierId}, Aantal {order.Quantity}"
+                Details = $"Inkooporder ID {order.Id} aangemaakt voor Product {order.ProductId}, Aantal {order.Quantity}"
             });
             await _context.SaveChangesAsync();
 
@@ -79,7 +79,7 @@ namespace API.Controllers
                 OrderId = null,
                 Timestamp = DateTime.UtcNow,
                 Activity = "Inkooporder aangepast",
-                Details = $"Inkooporder ID {order.Id} gewijzigd voor leverancier {order.SupplierId}"
+                Details = $"Inkooporder ID {order.Id} gewijzigd"
             });
             await _context.SaveChangesAsync();
 

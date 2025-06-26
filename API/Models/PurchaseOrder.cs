@@ -18,7 +18,7 @@ namespace API.Models
         public int ProductId { get; set; }
         public Product? Product { get; set; }
         public int Quantity { get; set; }
-        public int ProductionlineID { get; set; }
+        public int ProductionLineId { get; set; }
         public ProductionLine? ProductLine { get; set; }
     }
 }

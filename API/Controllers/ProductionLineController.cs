@@ -34,6 +34,6 @@ public class ProductionLineController : ControllerBase
         });
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(Post), new { id = item.Id }, item);
+        return CreatedAtAction(nameof(Post), new { id = item.ProductionLineId }, item);
     }
 }

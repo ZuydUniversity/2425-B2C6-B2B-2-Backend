@@ -30,11 +30,11 @@ namespace API.Controllers
             {
                 Timestamp = DateTime.UtcNow,
                 Activity = activity,
-                Details = $"PartsDelivery ID: {item.Id} status: {(item.IsComplete ? "volledig" : "incompleet")}"
+                Details = $"PartsDelivery ID: {item.PartsDeliveryId} status: {(item.IsComplete ? "volledig" : "incompleet")}"
             });
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Post), new { id = item.Id }, item);
+            return CreatedAtAction(nameof(Post), new { id = item.PartsDeliveryId }, item);
         }
     }
 

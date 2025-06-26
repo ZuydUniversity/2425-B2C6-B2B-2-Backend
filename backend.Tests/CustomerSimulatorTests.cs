@@ -6,6 +6,7 @@ using Xunit.Abstractions;
 
 namespace backend.Tests
 {
+
     public class CustomerSimulatorTests
     {
         private readonly HttpClient _httpClient;
@@ -14,27 +15,24 @@ namespace backend.Tests
         public CustomerSimulatorTests(ITestOutputHelper output)
         {
             _output = output;
-
             _httpClient = new HttpClient
             {
                 BaseAddress = new Uri("http://b2b2buildingblocks.westeurope.cloudapp.azure.com:8080/")
             };
-
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         [Fact]
         public async Task Full_Order_Creation_And_Logging_Flow_Works()
         {
-            // 1. Maak een order via API
             var testOrder = new
             {
-                CustomerId = 1,
-                ProductId = 1,
-                Quantity = 1,
-                TotalPrice = 999,
-                Status = "Pending",
-                OrderDate = DateTime.UtcNow
+                customerId = 1,
+                productId = 1,
+                quantity = 1,
+                totalPrice = 999.00m,
+                status = "Pending",
+                orderDate = DateTime.UtcNow
             };
 
             var json = JsonConvert.SerializeObject(testOrder);
@@ -51,7 +49,6 @@ namespace backend.Tests
             Assert.True(createdOrderId > 0, "Order ID ongeldig");
             _output.WriteLine($"[OK] Order aangemaakt met ID={createdOrderId}");
 
-            // 2. Check eventlog voor aanmaak
             var logResponse = await _httpClient.GetAsync("api/ProcessMining/log");
             Assert.True(logResponse.IsSuccessStatusCode, "Eventlog-opvraag mislukt");
 
@@ -62,7 +59,6 @@ namespace backend.Tests
             Assert.NotNull(log);
             _output.WriteLine($"[LOG OK] EventLog bevat aanmaakvermelding voor Order {createdOrderId}");
 
-            // 3. Delete de order via API (met logging van foutresponse)
             var deleteResponse = await _httpClient.DeleteAsync($"api/Orders/{createdOrderId}");
             if (!deleteResponse.IsSuccessStatusCode)
             {
@@ -71,7 +67,8 @@ namespace backend.Tests
             }
             _output.WriteLine($"[CLEANUP] Order {createdOrderId} verwijderd via API");
         }
-
     }
+
+
 }
 

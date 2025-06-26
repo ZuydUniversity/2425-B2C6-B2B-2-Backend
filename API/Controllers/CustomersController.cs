@@ -73,7 +73,7 @@ namespace API.Controllers
                     OrderId = null,
                     Timestamp = DateTime.UtcNow,
                     Activity = "Klantgegevens gewijzigd",
-                    Details = $"Customer {customer.Username} (ID: {customer.Id}) aangepast"
+                    Details = $"Customer {customer.Name} (ID: {customer.Id}) aangepast"
                 });
                 await _context.SaveChangesAsync();
             }
@@ -89,7 +89,7 @@ namespace API.Controllers
                 }
             }
 
-            return CreatedAtAction("GetCustomer", new { id = customer.Username }, customer);
+            return CreatedAtAction("GetCustomer", new { id = customer.Name }, customer);
         }
 
         /// <summary>
@@ -99,15 +99,15 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
-            try
-            {
-                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(customer.Password);
-                customer.Password = hashedPassword;
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error hashing password: {ex.Message}");
-            }
+            //try
+            //{
+            //    var hashedPassword = BCrypt.Net.BCrypt.HashPassword(customer.Password);
+            //    customer.Password = hashedPassword;
+            //}
+            //catch (Exception ex)
+            //{
+            //    return BadRequest($"Error hashing password: {ex.Message}");
+            //}
 
             _context.Customer.Add(customer);
             try
@@ -119,13 +119,13 @@ namespace API.Controllers
                     OrderId = null,
                     Timestamp = DateTime.UtcNow,
                     Activity = "Klant aangemaakt",
-                    Details = $"Nieuwe klant {customer.Username} (ID: {customer.Id}) geregistreerd"
+                    Details = $"Nieuwe klant {customer.Name} (ID: {customer.Id}) geregistreerd"
                 });
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (CustomerExists(customer.Username))
+                if (CustomerExists(customer.Name))
                 {
                     return Conflict();
                 }
@@ -135,7 +135,7 @@ namespace API.Controllers
                 }
             }
 
-            return CreatedAtAction("GetCustomer", new { id = customer.Username }, customer);
+            return CreatedAtAction("GetCustomer", new { id = customer.Name }, customer);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace API.Controllers
                 OrderId = null,
                 Timestamp = DateTime.UtcNow,
                 Activity = "Klant verwijderd",
-                Details = $"Klant {customer.Username} verwijderd uit het systeem"
+                Details = $"Klant {customer.Name} verwijderd uit het systeem"
             });
             await _context.SaveChangesAsync();
 
@@ -168,7 +168,7 @@ namespace API.Controllers
 
         private bool CustomerExists(string username)
         {
-            return _context.Customer.Any(e => e.Username == username);
+            return _context.Customer.Any(e => e.Name == username);
         }
 
         private bool CustomerExists(int id)

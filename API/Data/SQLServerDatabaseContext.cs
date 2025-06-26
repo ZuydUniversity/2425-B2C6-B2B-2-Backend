@@ -23,6 +23,7 @@ namespace API.Data
         public DbSet<Delivery> Delivery { get; set; }
         public DbSet<PartsDelivery> PartsDelivery { get; set; }
         public DbSet<Planning> Planning { get; set; }
+        public DbSet<QualityControl> QualityControl { get; set; }
 
 
 

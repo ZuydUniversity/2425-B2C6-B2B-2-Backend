@@ -11,12 +11,14 @@ namespace API.Models
         /// </summary>
 
         public int Id { get; set; }
-        public DateTime OrderDate { get; set; }
+        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
         public DateTime? DeliverDate { get; set; }
         public string OrderNumber { get; set; }
         public string Status { get; set; } // Pending, Delivered, Cancelled
         public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
         public int Quantity { get; set; }
+        public int ProductionlineID { get; set; }
+        public ProductionLine? ProductLine { get; set; }
     }
 }

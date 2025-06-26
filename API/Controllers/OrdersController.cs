@@ -1,5 +1,4 @@
 ﻿using API.Data;
-using API.Dtos;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -83,28 +82,18 @@ namespace API.Controllers
         /// <summary>
         /// Maakt een nieuwe order aan.
         /// </summary>
-        /// <param name="dto">Nieuwe order data van frontend</param>
+        /// <param name="order">Nieuwe order</param>
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(OrderDto dto)
+        public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-            if (!CustomerExists(dto.CustomerId) || !ProductExists(dto.ProductId))
+            if (!CustomerExists(order.CustomerId) || !ProductExists(order.ProductId))
                 return BadRequest("Invalid Customer or Product ID.");
 
-            if (dto.Quantity <= 0)
+            if (order.Quantity <= 0)
                 return BadRequest("Quantity must be greater than zero.");
 
             try
             {
-                var order = new Order
-                {
-                    CustomerId = dto.CustomerId,
-                    ProductId = dto.ProductId,
-                    Quantity = dto.Quantity,
-                    PicklistStatus = dto.PicklistStatus,
-                    RejectionReason = dto.RejectionReason,
-                    TotalPrice = await BerekenPrijs(dto.ProductId, dto.Quantity)
-                };
-
                 _context.Order.Add(order);
                 await _context.SaveChangesAsync();
 
@@ -128,8 +117,6 @@ namespace API.Controllers
                 return StatusCode(500, "Interne serverfout bij aanmaken order.");
             }
         }
-
-
 
         /// <summary>
         /// Verwijdert een bestaande order.
@@ -179,21 +166,6 @@ namespace API.Controllers
 
         private bool SupplierExists(int id) =>
             _context.Suppliers.Any(e => e.Id == id);
-
-
-        /// <summary>
-        /// Berekent de totaalprijs van de order.
-        /// </summary>
-        /// <param name="productId">ID van het product</param>
-        /// <param name="quantity">Aantal producten</param>
-        /// <returns>Totaalprijs van de order</returns>
-        private async Task<decimal> BerekenPrijs(int productId, int quantity)
-        {
-            var product = await _context.Product.FindAsync(productId);
-            if (product == null) return 0;
-
-            return product.Price * quantity;
-        }
     }
 }
 

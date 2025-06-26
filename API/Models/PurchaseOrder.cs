@@ -1,15 +1,22 @@
-﻿namespace API.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace API.Models
 {
+    [PrimaryKey(nameof(Id))]
     public class PurchaseOrder
     {
-        public int Id { get; set; }
-        public string OrderNumber { get; set; }
-        public DateTime OrderDate { get; set; }
-        public string CustomerName { get; set; }
-        public string Status { get; set; } // Pending, Approved, Rejected
-        public int ProductId { get; set; }
-        public int SupplierId { get; set; }
-        public int Quantity { get; set; }
+        /// <summary>
+        /// Een bestelling, wanneer deze is aangemaakt veranderd de status van de order in 'Waiting on Materials'.
+        /// Dit bevat het ordernummer en het product
+        /// </summary>
 
+        public int Id { get; set; }
+        public DateTime OrderDate { get; set; }
+        public DateTime? DeliverDate { get; set; }
+        public string OrderNumber { get; set; }
+        public string Status { get; set; } // Pending, Delivered, Cancelled
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
+        public int Quantity { get; set; }
     }
 }

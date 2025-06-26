@@ -53,6 +53,11 @@ namespace API.Controllers
             if (!CustomerExists(order.CustomerId) || !ProductExists(order.ProductId))
                 return BadRequest("Invalid Customer or Product ID.");
 
+            if (order.Quantity <= 0)
+            {
+                return BadRequest("Quantity must be greater than zero.");
+            }
+
             _context.Entry(order).State = EntityState.Modified;
 
             try
@@ -155,17 +160,11 @@ namespace API.Controllers
         private bool OrderExists(int id) =>
             _context.Order.Any(e => e.Id == id);
 
-        private bool CustomerExists(string username) =>
-            _context.Customer.Any(e => e.Username == username);
-
         private bool CustomerExists(int id) =>
             _context.Customer.Any(e => e.Id == id);
 
         private bool ProductExists(int id) =>
             _context.Product.Any(e => e.Id == id);
-
-        private bool SupplierExists(int id) =>
-            _context.Suppliers.Any(e => e.Id == id);
     }
 }
 

@@ -22,70 +22,6 @@ namespace API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("API.Models.AccountManager", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AccountManager");
-                });
-
-            modelBuilder.Entity("API.Models.ApprovalForm", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Comments")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateApproved")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PurchaseOrderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PurchaseOrderId");
-
-                    b.ToTable("ApprovalForms");
-                });
-
             modelBuilder.Entity("API.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
@@ -114,35 +50,6 @@ namespace API.Migrations
                         .IsUnique();
 
                     b.ToTable("Customer");
-                });
-
-            modelBuilder.Entity("API.Models.Delivery", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeliveryReference")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("Delivery");
                 });
 
             modelBuilder.Entity("API.Models.EventLog", b =>
@@ -174,38 +81,6 @@ namespace API.Migrations
                     b.ToTable("EventLogs");
                 });
 
-            modelBuilder.Entity("API.Models.Expedition", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Destination")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDelivered")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ShipmentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ShipmentReference")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("Expeditions");
-                });
-
             modelBuilder.Entity("API.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -214,8 +89,8 @@ namespace API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AccountManagerId")
-                        .HasColumnType("int");
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ApprovedDate")
                         .HasColumnType("datetime2");
@@ -232,25 +107,10 @@ namespace API.Migrations
                     b.Property<bool>("ForwardedToSupplier")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSignedByAccountmanager")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSignedByInkoop")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OrderType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PicklistStatus")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProductionLineId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -273,78 +133,11 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountManagerId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ProductionLineId");
-
                     b.ToTable("Order");
-                });
-
-            modelBuilder.Entity("API.Models.PartsDelivery", b =>
-                {
-                    b.Property<int>("PartsDeliveryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PartsDeliveryId"));
-
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsComplete")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PartsReference")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PartsDeliveryId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("PartsDelivery");
-                });
-
-            modelBuilder.Entity("API.Models.Picklist", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Components")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PurchaseOrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PurchaseOrderId");
-
-                    b.ToTable("Picklists");
                 });
 
             modelBuilder.Entity("API.Models.Planning", b =>
@@ -355,14 +148,20 @@ namespace API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("PlannedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ProductionLineId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductionLineId");
 
                     b.ToTable("Planning");
                 });
@@ -375,13 +174,15 @@ namespace API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BlueBlocks")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("CostPrice")
                         .HasPrecision(11, 2)
                         .HasColumnType("decimal(11,2)");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("GreyBlocks")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -391,7 +192,7 @@ namespace API.Migrations
                         .HasPrecision(11, 2)
                         .HasColumnType("decimal(11,2)");
 
-                    b.Property<int>("StockQuantity")
+                    b.Property<int>("RedBlocks")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -401,20 +202,20 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.ProductionLine", b =>
                 {
-                    b.Property<int>("ProductionLineId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductionLineId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("LineName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProductionLineId");
+                    b.HasKey("Id");
 
                     b.ToTable("ProductionLines");
                 });
@@ -427,9 +228,8 @@ namespace API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("DeliverDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
@@ -448,104 +248,11 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PurchaseOrders");
-                });
-
-            modelBuilder.Entity("API.Models.QualityControl", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Comments")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("QualityControl");
-                });
-
-            modelBuilder.Entity("API.Models.RejectionForm", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PurchaseOrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RejectionDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PurchaseOrderId");
-
-                    b.ToTable("RejectionForms");
-                });
-
-            modelBuilder.Entity("API.Models.Suppliers", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Suppliers");
-                });
-
-            modelBuilder.Entity("API.Models.ApprovalForm", b =>
-                {
-                    b.HasOne("API.Models.PurchaseOrder", "PurchaseOrder")
-                        .WithMany()
-                        .HasForeignKey("PurchaseOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PurchaseOrder");
-                });
-
-            modelBuilder.Entity("API.Models.Delivery", b =>
-                {
-                    b.HasOne("API.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
+                    b.ToTable("PurchaseOrders");
                 });
 
             modelBuilder.Entity("API.Models.EventLog", b =>
@@ -558,23 +265,8 @@ namespace API.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("API.Models.Expedition", b =>
-                {
-                    b.HasOne("API.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("API.Models.Order", b =>
                 {
-                    b.HasOne("API.Models.AccountManager", "AccountManager")
-                        .WithMany()
-                        .HasForeignKey("AccountManagerId");
-
                     b.HasOne("API.Models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
@@ -587,20 +279,12 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.ProductionLine", "ProductionLine")
-                        .WithMany()
-                        .HasForeignKey("ProductionLineId");
-
-                    b.Navigation("AccountManager");
-
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
-
-                    b.Navigation("ProductionLine");
                 });
 
-            modelBuilder.Entity("API.Models.PartsDelivery", b =>
+            modelBuilder.Entity("API.Models.Planning", b =>
                 {
                     b.HasOne("API.Models.Order", "Order")
                         .WithMany()
@@ -608,21 +292,18 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("API.Models.Picklist", b =>
-                {
-                    b.HasOne("API.Models.PurchaseOrder", "PurchaseOrder")
+                    b.HasOne("API.Models.ProductionLine", "ProductionLine")
                         .WithMany()
-                        .HasForeignKey("PurchaseOrderId")
+                        .HasForeignKey("ProductionLineId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PurchaseOrder");
+                    b.Navigation("Order");
+
+                    b.Navigation("ProductionLine");
                 });
 
-            modelBuilder.Entity("API.Models.QualityControl", b =>
+            modelBuilder.Entity("API.Models.PurchaseOrder", b =>
                 {
                     b.HasOne("API.Models.Product", "Product")
                         .WithMany()
@@ -631,17 +312,6 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("API.Models.RejectionForm", b =>
-                {
-                    b.HasOne("API.Models.PurchaseOrder", "PurchaseOrder")
-                        .WithMany()
-                        .HasForeignKey("PurchaseOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PurchaseOrder");
                 });
 
             modelBuilder.Entity("API.Models.Customer", b =>

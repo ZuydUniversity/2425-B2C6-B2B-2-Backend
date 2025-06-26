@@ -88,6 +88,9 @@ namespace API.Data
                 new ProductionLine { Id = 2, Name = "Lijn 2", IsActive = true },
                 new ProductionLine { Id = 3, Name = "Lijn 3", IsActive = true}
             );
+            modelBuilder.Entity<Customer>().HasData(
+                new Customer { Id = 1, Name = "Customer 1" }
+            );
 
             base.OnModelCreating(modelBuilder);
         }

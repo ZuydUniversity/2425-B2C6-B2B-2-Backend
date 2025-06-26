@@ -50,5 +50,8 @@ namespace API.Models
         public Product? Product { get; set; }
         public List<EventLog> EventLogs { get; set; } = new();
 
+        public ProductionLine? ProductionLine { get; set; } // Relatie met Productie lijn
+        public AccountManager? AccountManager { get; set; } // Relatie met Account Manager
+
     }
 }

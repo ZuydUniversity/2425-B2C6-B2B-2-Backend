@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(SQLServerDatabaseContext))]
-    partial class SQLServerDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250625200806_Delivery-model-opnieuw-toegevoegd")]
+    partial class Deliverymodelopnieuwtoegevoegd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,39 +24,6 @@ namespace API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("API.Models.AccountManager", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AccountManager");
-                });
 
             modelBuilder.Entity("API.Models.ApprovalForm", b =>
                 {
@@ -189,9 +159,6 @@ namespace API.Migrations
                     b.Property<bool>("IsDelivered")
                         .HasColumnType("bit");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("ShipmentDate")
                         .HasColumnType("datetime2");
 
@@ -200,8 +167,6 @@ namespace API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("Expeditions");
                 });
@@ -213,9 +178,6 @@ namespace API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AccountManagerId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("ApprovedDate")
                         .HasColumnType("datetime2");
@@ -250,9 +212,6 @@ namespace API.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductionLineId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -273,43 +232,11 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountManagerId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ProductionLineId");
-
                     b.ToTable("Order");
-                });
-
-            modelBuilder.Entity("API.Models.PartsDelivery", b =>
-                {
-                    b.Property<int>("PartsDeliveryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PartsDeliveryId"));
-
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsComplete")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PartsReference")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PartsDeliveryId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("PartsDelivery");
                 });
 
             modelBuilder.Entity("API.Models.Picklist", b =>
@@ -347,26 +274,6 @@ namespace API.Migrations
                     b.ToTable("Picklists");
                 });
 
-            modelBuilder.Entity("API.Models.Planning", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PlannedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Planning");
-                });
-
             modelBuilder.Entity("API.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -401,11 +308,11 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.ProductionLine", b =>
                 {
-                    b.Property<int>("ProductionLineId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductionLineId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -414,7 +321,7 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProductionLineId");
+                    b.HasKey("Id");
 
                     b.ToTable("ProductionLines");
                 });
@@ -454,31 +361,6 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PurchaseOrders");
-                });
-
-            modelBuilder.Entity("API.Models.QualityControl", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Comments")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("QualityControl");
                 });
 
             modelBuilder.Entity("API.Models.RejectionForm", b =>
@@ -558,23 +440,8 @@ namespace API.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("API.Models.Expedition", b =>
-                {
-                    b.HasOne("API.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("API.Models.Order", b =>
                 {
-                    b.HasOne("API.Models.AccountManager", "AccountManager")
-                        .WithMany()
-                        .HasForeignKey("AccountManagerId");
-
                     b.HasOne("API.Models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
@@ -587,28 +454,9 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.ProductionLine", "ProductionLine")
-                        .WithMany()
-                        .HasForeignKey("ProductionLineId");
-
-                    b.Navigation("AccountManager");
-
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
-
-                    b.Navigation("ProductionLine");
-                });
-
-            modelBuilder.Entity("API.Models.PartsDelivery", b =>
-                {
-                    b.HasOne("API.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("API.Models.Picklist", b =>
@@ -620,17 +468,6 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.Navigation("PurchaseOrder");
-                });
-
-            modelBuilder.Entity("API.Models.QualityControl", b =>
-                {
-                    b.HasOne("API.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("API.Models.RejectionForm", b =>

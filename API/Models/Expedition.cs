@@ -7,5 +7,6 @@
         public DateTime ShipmentDate { get; set; }
         public string Destination { get; set; }
         public bool IsDelivered { get; set; }
+        public Order Order { get; set; } // Relatie met Order
     }
 }

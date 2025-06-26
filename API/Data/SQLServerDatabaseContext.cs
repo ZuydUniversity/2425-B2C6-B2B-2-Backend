@@ -22,6 +22,7 @@ namespace API.Data
         public DbSet<Expedition> Expeditions { get; set; }
         public DbSet<Delivery> Delivery { get; set; }
         public DbSet<PartsDelivery> PartsDelivery { get; set; }
+        public DbSet<Planning> Planning { get; set; }
 
 
 

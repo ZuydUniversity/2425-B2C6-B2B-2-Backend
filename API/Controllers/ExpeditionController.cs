@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// API-controller voor het beheren van expedities en verzendingen.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ExpeditionController : ControllerBase
@@ -16,87 +19,26 @@ namespace API.Controllers
             _context = context;
         }
 
-        // GET: api/Expedition
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Expedition>>> GetExpeditions()
-        {
-            return await _context.Expeditions.ToListAsync();
-        }
+        public async Task<ActionResult<IEnumerable<Expedition>>> GetAll() =>
+            await _context.Expeditions.ToListAsync();
 
-        // GET: api/Expedition/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Expedition>> GetExpedition(int id)
-        {
-            var expedition = await _context.Expeditions.FindAsync(id);
-
-            if (expedition == null)
-            {
-                return NotFound();
-            }
-
-            return expedition;
-        }
-
-        // POST: api/Expedition
         [HttpPost]
-        public async Task<ActionResult<Expedition>> PostExpedition(Expedition expedition)
+        public async Task<ActionResult<Expedition>> Post(Expedition item)
         {
-            _context.
-                Expeditions.Add(expedition);
+            _context.Expeditions.Add(item);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetExpedition), new { id = expedition.Id }, expedition);
-        }
-
-        // PUT: api/Expedition/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutExpedition(int id, Expedition expedition)
-        {
-            if (id != expedition.Id)
+            _context.EventLogs.Add(new EventLog
             {
-                return BadRequest();
-            }
-
-            _context.Entry(expedition).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ExpeditionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/Expedition/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteExpedition(int id)
-        {
-            var expedition = await _context.Expeditions.FindAsync(id);
-            if (expedition == null)
-            {
-                return NotFound();
-            }
-
-            _context.Expeditions.Remove(expedition);
+                Timestamp = DateTime.UtcNow,
+                Activity = "Expeditie toegevoegd",
+                Details = $"Zending: {item.ShipmentReference} naar {item.Destination}"
+            });
             await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
-
-        private bool ExpeditionExists(int id)
-        {
-            return _context.Expeditions.Any(e => e.Id == id);
+            return CreatedAtAction(nameof(Post), new { id = item.Id }, item);
         }
     }
+
 }

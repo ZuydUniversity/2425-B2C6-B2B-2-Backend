@@ -11,6 +11,7 @@ namespace API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
             var connectionString = builder.Configuration.GetSection("Database")["ConnectionString"];
             connectionString = connectionString
@@ -27,6 +28,18 @@ namespace API
             builder.Services.Configure<AppSettings>(options =>
             {
                 options.ConnectionString = connectionString;
+            });
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("http://b2b2buildingblocks.westeurope.cloudapp.azure.com",
+                                          "https://b2b2buildingblocks.westeurope.cloudapp.azure.com",
+                                          "http://10.0.1.4",
+                                          "https://10.0.1.4"); // added local ip-adresses just in case
+                                  });
             });
 
             builder.Services.AddControllers();
@@ -67,7 +80,7 @@ namespace API
                 });
             }
 
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthorization();
             app.MapControllers();
             app.Run();

@@ -36,9 +36,7 @@ namespace API
                                   policy =>
                                   {
                                       policy.WithOrigins("http://b2b2buildingblocks.westeurope.cloudapp.azure.com",
-                                          "https://b2b2buildingblocks.westeurope.cloudapp.azure.com",
-                                          "http://10.0.1.4",
-                                          "https://10.0.1.4"); // added local ip-adresses just in case
+                                          "http://10.0.1.4"); // added local ip-adresses just in case
                                   });
             });
 

@@ -25,7 +25,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrder()
         {
-            return await _context.Order.ToListAsync();
+            return await _context.Order.Include(o => o.Customer).ToListAsync();
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
-            var order = await _context.Order.FindAsync(id);
+            var order = await _context.Order.Include(o => o.Customer).FirstOrDefaultAsync(o => o.Id == id);
             return order == null ? NotFound() : order;
         }
 

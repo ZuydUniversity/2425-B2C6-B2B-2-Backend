@@ -58,6 +58,11 @@ namespace API.Controllers
                 return BadRequest("Quantity must be greater than zero.");
             }
 
+            if (order.OrderDate == null)
+            {
+                order.OrderDate = DateTime.UtcNow;
+            }
+
             _context.Entry(order).State = EntityState.Modified;
 
             try
@@ -96,6 +101,11 @@ namespace API.Controllers
 
             if (order.Quantity <= 0)
                 return BadRequest("Quantity must be greater than zero.");
+
+            if (order.OrderDate == null)
+            {
+                order.OrderDate = DateTime.UtcNow;
+            }
 
             try
             {

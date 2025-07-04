@@ -43,7 +43,7 @@ namespace API.Models
         /// OrderDate is the date and time when the order was placed.
         /// </summary>
         [Required]
-        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+        public DateTime? OrderDate { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// ApprovedDate is the date and time when the order was approved by the account manager (if necessary).

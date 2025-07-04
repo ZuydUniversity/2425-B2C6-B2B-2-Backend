@@ -11,7 +11,5 @@ namespace API.Models
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
-
-        public List<Order>? Orders { get; set; }
     }
 }

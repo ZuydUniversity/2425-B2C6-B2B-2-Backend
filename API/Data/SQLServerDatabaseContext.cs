@@ -41,10 +41,7 @@ namespace API.Data
                 .HasPrecision(18, 2);
 
             modelBuilder.Entity<Order>()
-                .HasOne(o => o.Customer)
-                .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.CustomerId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(o => o.Customer);
 
             modelBuilder.Entity<EventLog>()
                 .HasOne(e => e.Order)

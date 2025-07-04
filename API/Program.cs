@@ -35,8 +35,9 @@ namespace API
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("http://b2b2buildingblocks.westeurope.cloudapp.azure.com",
-                                          "http://10.0.1.4"); // added local ip-adresses just in case
+                                      policy.AllowAnyOrigin() // Allow any origin to temporary bypass CORS errors
+                                            .AllowAnyMethod()
+                                            .AllowAnyHeader();
                                   });
             });
 

@@ -27,7 +27,10 @@ namespace API.Controllers
         /// <returns>Alle planningen</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Planning>>> GetAll() =>
-            await _context.Planning.ToListAsync();
+            await _context.Planning
+                .Include(p => p.Order)
+                .Include(p => p.ProductionLine)
+                .ToListAsync();
 
         /// <summary>
         /// Plant een order in op een specifieke productielijn.
@@ -37,8 +40,6 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Planning>> Post(Planning item)
         {
-
-
             _context.Planning.Add(item);
             await _context.SaveChangesAsync();
 

@@ -25,7 +25,10 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PurchaseOrder>>> GetPurchaseOrders()
         {
-            return await _context.PurchaseOrders.ToListAsync();
+            return await _context.PurchaseOrders
+                .Include(po => po.Product)
+                .Include(po => po.ProductLine)
+                .ToListAsync();
         }
 
         /// <summary>

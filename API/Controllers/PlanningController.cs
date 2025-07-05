@@ -26,11 +26,26 @@ namespace API.Controllers
         /// </summary>
         /// <returns>Alle planningen</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Planning>>> GetAll() =>
-            await _context.Planning
-                .Include(p => p.Order)
-                .Include(p => p.ProductionLine)
-                .ToListAsync();
+        public async Task<ActionResult<IEnumerable<Planning>>> GetAll()
+        {
+            List<Planning>? planning = null;
+
+            try
+            {
+                planning = await _context.Planning
+                    .Include(p => p.Order)
+                        .ThenInclude(o => o.Customer)
+                    .Include(p => p.Order)
+                        .ThenInclude(o => o.Product)
+                    .Include(p => p.ProductionLine)
+                    .ToListAsync();
+            } catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error retrieving data: {ex.Message}");
+            }
+
+            return planning == null ? NotFound() : Ok(planning);
+        }
 
         /// <summary>
         /// Plant een order in op een specifieke productielijn.

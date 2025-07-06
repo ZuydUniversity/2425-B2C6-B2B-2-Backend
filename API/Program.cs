@@ -14,6 +14,7 @@ namespace API
             var builder = WebApplication.CreateBuilder(args);
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
+            ConfigureHttps(builder);
             var connectionString = builder.Configuration.GetSection("Database")["ConnectionString"];
             connectionString = connectionString
                 .Replace("${DB_SERVER}", Environment.GetEnvironmentVariable("DB_SERVER") ?? "10.0.2.4")
@@ -79,11 +80,55 @@ namespace API
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Building Blocks API v1");
                 });
             }
-
+            app.UseHttpsRedirection();
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthorization();
             app.MapControllers();
             app.Run();
+        }
+
+        private static void ConfigureHttps(WebApplicationBuilder builder)
+        {
+            // Check if SSL certificate and key are provided via environment variables
+            var sslCert = Environment.GetEnvironmentVariable("SSL_CERTIFICATE");
+            var sslKey = Environment.GetEnvironmentVariable("SSL_PRIVATE_KEY");
+
+            if (!string.IsNullOrEmpty(sslCert) && !string.IsNullOrEmpty(sslKey))
+            {
+                try
+                {
+                    // Convert Base64 strings to certificate and key bytes
+                    var certBytes = Convert.FromBase64String(sslCert);
+                    var keyBytes = Convert.FromBase64String(sslKey);
+
+                    // Create X509Certificate2 from the certificate and key files
+                    // Since these are already in the correct format, we can use CreateFromPem
+                    var certificate = X509Certificate2.CreateFromPem(
+                        System.Text.Encoding.UTF8.GetString(certBytes),
+                        System.Text.Encoding.UTF8.GetString(keyBytes));
+
+                    // Configure Kestrel to use HTTPS with the certificate
+                    builder.WebHost.ConfigureKestrel(serverOptions =>
+                    {
+                        serverOptions.ListenAnyIP(8080); // HTTP
+                        serverOptions.ListenAnyIP(8081, listenOptions =>
+                        {
+                            listenOptions.UseHttps(certificate);
+                        }); // HTTPS
+                    });
+
+                    Console.WriteLine("HTTPS configured successfully with certificate from environment variables.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to configure HTTPS: {ex.Message}");
+                    Console.WriteLine($"Exception details: {ex}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("SSL_CERTIFICATE or SSL_PRIVATE_KEY not provided. Running without HTTPS.");
+            }
         }
     }
 }

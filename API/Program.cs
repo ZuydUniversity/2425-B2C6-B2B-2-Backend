@@ -92,6 +92,7 @@ namespace API
             // Check if SSL certificate and password are provided via environment variables
             var sslCert = Environment.GetEnvironmentVariable("SSL_CERTIFICATE");
             var sslPassword = Environment.GetEnvironmentVariable("SSL_PASSWORD");
+            var sslChain = Environment.GetEnvironmentVariable("SSL_CERTIFICATE_CHAIN"); // Optional: additional chain certificates
 
             if (!string.IsNullOrEmpty(sslCert))
             {
@@ -118,7 +119,7 @@ namespace API
                         certificate = new X509Certificate2(
                             certBytes,
                             sslPassword,
-                            X509KeyStorageFlags.EphemeralKeySet | X509KeyStorageFlags.Exportable);
+                            X509KeyStorageFlags.EphemeralKeySet | X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                         Console.WriteLine("Certificate loaded with password protection");
                     }
                     else
@@ -127,8 +128,57 @@ namespace API
                         certificate = new X509Certificate2(
                             certBytes,
                             (string)null,
-                            X509KeyStorageFlags.EphemeralKeySet | X509KeyStorageFlags.Exportable);
+                            X509KeyStorageFlags.EphemeralKeySet | X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
                         Console.WriteLine("Certificate loaded without password");
+                    }
+
+                    // Build certificate chain with all necessary certificates
+                    var certificateCollection = new X509Certificate2Collection(certificate);
+
+                    // If additional chain certificates were provided, add them to the collection
+                    if (!string.IsNullOrEmpty(sslChain) && IsValidBase64String(sslChain))
+                    {
+                        try
+                        {
+                            var chainBytes = Convert.FromBase64String(sslChain);
+                            var chainCert = new X509Certificate2(chainBytes);
+                            certificateCollection.Add(chainCert);
+                            Console.WriteLine("Added intermediate certificate to the chain");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Warning: Failed to add intermediate certificate: {ex.Message}");
+                        }
+                    }
+                    else
+                    {
+                        // Try to build the chain automatically
+                        X509Chain chain = new X509Chain();
+                        chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+                        chain.ChainPolicy.RevocationFlag = X509RevocationFlag.ExcludeRoot;
+                        chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
+                        chain.ChainPolicy.VerificationTime = DateTime.Now;
+                        chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 0, 30);
+
+                        if (chain.Build(certificate))
+                        {
+                            Console.WriteLine($"Certificate chain successfully built with {chain.ChainElements.Count} elements");
+
+                            // Add all elements except the first one (which is the leaf certificate we already have)
+                            for (int i = 1; i < chain.ChainElements.Count; i++)
+                            {
+                                certificateCollection.Add(chain.ChainElements[i].Certificate);
+                                Console.WriteLine($"Added chain certificate: {chain.ChainElements[i].Certificate.Subject}");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Warning: Failed to build certificate chain automatically");
+                            foreach (var status in chain.ChainStatus)
+                            {
+                                Console.WriteLine($"Chain status: {status.Status} - {status.StatusInformation}");
+                            }
+                        }
                     }
 
                     // Log certificate details for verification
@@ -137,18 +187,31 @@ namespace API
                     Console.WriteLine($"Certificate Valid From: {certificate.NotBefore}");
                     Console.WriteLine($"Certificate Valid To: {certificate.NotAfter}");
                     Console.WriteLine($"Certificate Has Private Key: {certificate.HasPrivateKey}");
+                    Console.WriteLine($"Total certificates in collection: {certificateCollection.Count}");
 
                     // Configure Kestrel to use HTTPS with the certificate
                     builder.WebHost.ConfigureKestrel(serverOptions =>
                     {
-                        serverOptions.ListenAnyIP(8080); // HTTP
+                        // HTTP on 8080
+                        serverOptions.ListenAnyIP(8080, listenOptions =>
+                        {
+                            listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+                        });
+
+                        // HTTPS on 8081 with complete certificate chain
                         serverOptions.ListenAnyIP(8081, listenOptions =>
                         {
-                            listenOptions.UseHttps(certificate);
-                        }); // HTTPS
+                            listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+
+                            // Use the certificate collection with the complete chain
+                            listenOptions.UseHttps(new System.Security.Cryptography.X509Certificates.X509Certificate2(certificate.Export(X509ContentType.Pkcs12)), httpsOptions =>
+                            {
+                                httpsOptions.ServerCertificateSelector = (connectionContext, name) => certificateCollection[0];
+                            });
+                        });
                     });
 
-                    Console.WriteLine("HTTPS configured successfully with certificate from environment variables");
+                    Console.WriteLine("HTTPS configured successfully with complete certificate chain");
                 }
                 catch (Exception ex)
                 {

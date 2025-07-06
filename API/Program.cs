@@ -80,7 +80,7 @@ namespace API
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Building Blocks API v1");
                 });
             }
-            app.UseHttpsRedirection();
+
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthorization();
             app.MapControllers();
@@ -140,6 +140,8 @@ namespace API
                             {
                                 httpsOptions.ServerCertificateSelector = (_, _) => certificate;
                                 httpsOptions.ServerCertificate = certificate;
+                                httpsOptions.ClientCertificateMode = Microsoft.AspNetCore.Server.Kestrel.Https.ClientCertificateMode.NoCertificate;
+                                httpsOptions.CheckCertificateRevocation = false;
                             });
                         }); // HTTPS
                     });

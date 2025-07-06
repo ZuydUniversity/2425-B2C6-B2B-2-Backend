@@ -50,7 +50,7 @@ namespace API
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
-                {   
+                {
                     Title = "Building Blocks API",
                     Version = "v1",
                     Description = "Proces Mining & Orderbeheer API voor Building Blocks"
@@ -89,38 +89,54 @@ namespace API
 
         private static void ConfigureHttps(WebApplicationBuilder builder)
         {
-            // Check if SSL certificate, key, and password are provided via environment variables
+            // Check if SSL certificate and password are provided via environment variables
             var sslCert = Environment.GetEnvironmentVariable("SSL_CERTIFICATE");
-            var sslKey = Environment.GetEnvironmentVariable("SSL_PRIVATE_KEY");
             var sslPassword = Environment.GetEnvironmentVariable("SSL_PASSWORD");
 
-            if (!string.IsNullOrEmpty(sslCert) && !string.IsNullOrEmpty(sslKey))
+            if (!string.IsNullOrEmpty(sslCert))
             {
                 try
                 {
-                    // Convert Base64 strings to certificate and key bytes
+                    Console.WriteLine("Attempting to load SSL certificate...");
+
+                    // Validate that the certificate appears to be Base64 encoded
+                    if (!IsValidBase64String(sslCert))
+                    {
+                        throw new FormatException("The SSL_CERTIFICATE does not appear to be a valid Base64 string");
+                    }
+
+                    // Convert Base64 string to certificate bytes
                     var certBytes = Convert.FromBase64String(sslCert);
-                    var keyBytes = Convert.FromBase64String(sslKey);
+                    Console.WriteLine($"Successfully decoded certificate from Base64. Certificate size: {certBytes.Length} bytes");
 
-                    // Create X509Certificate2 from the certificate and key files
-                    var certificate = X509Certificate2.CreateFromPem(
-                        System.Text.Encoding.UTF8.GetString(certBytes),
-                        System.Text.Encoding.UTF8.GetString(keyBytes));
+                    X509Certificate2 certificate;
 
-                    // If a password is provided, create a new certificate with the password
+                    // Create certificate with password (if provided) or without
                     if (!string.IsNullOrEmpty(sslPassword))
                     {
-                        // Export the certificate to PFX format
-                        byte[] pfxData = certificate.Export(X509ContentType.Pfx);
-
-                        // Create a new certificate with the password and ephemeral key set
+                        // Load the PFX certificate with the password
                         certificate = new X509Certificate2(
-                            pfxData,
-                            sslPassword,  // Use the password directly (not Base64 encoded)
-                            X509KeyStorageFlags.EphemeralKeySet);
-
-                        Console.WriteLine("Certificate loaded with password protection.");
+                            certBytes,
+                            sslPassword,
+                            X509KeyStorageFlags.EphemeralKeySet | X509KeyStorageFlags.Exportable);
+                        Console.WriteLine("Certificate loaded with password protection");
                     }
+                    else
+                    {
+                        // Try to load without password
+                        certificate = new X509Certificate2(
+                            certBytes,
+                            (string)null,
+                            X509KeyStorageFlags.EphemeralKeySet | X509KeyStorageFlags.Exportable);
+                        Console.WriteLine("Certificate loaded without password");
+                    }
+
+                    // Log certificate details for verification
+                    Console.WriteLine($"Certificate Subject: {certificate.Subject}");
+                    Console.WriteLine($"Certificate Issuer: {certificate.Issuer}");
+                    Console.WriteLine($"Certificate Valid From: {certificate.NotBefore}");
+                    Console.WriteLine($"Certificate Valid To: {certificate.NotAfter}");
+                    Console.WriteLine($"Certificate Has Private Key: {certificate.HasPrivateKey}");
 
                     // Configure Kestrel to use HTTPS with the certificate
                     builder.WebHost.ConfigureKestrel(serverOptions =>
@@ -132,18 +148,57 @@ namespace API
                         }); // HTTPS
                     });
 
-                    Console.WriteLine("HTTPS configured successfully with certificate from environment variables.");
+                    Console.WriteLine("HTTPS configured successfully with certificate from environment variables");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Failed to configure HTTPS: {ex.Message}");
-                    Console.WriteLine($"Exception details: {ex}");
+                    Console.WriteLine($"Exception type: {ex.GetType().Name}");
+
+                    if (ex.InnerException != null)
+                    {
+                        Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                    }
+
+                    Console.WriteLine("Running without HTTPS. Please check your certificate and password.");
                 }
             }
             else
             {
-                Console.WriteLine("SSL_CERTIFICATE or SSL_PRIVATE_KEY not provided. Running without HTTPS.");
+                Console.WriteLine("SSL_CERTIFICATE not provided. Running without HTTPS.");
             }
+        }
+
+        // Helper method to validate if a string is Base64 encoded
+        private static bool IsValidBase64String(string base64)
+        {
+            // Quick validation - ensure string length is multiple of 4
+            if (string.IsNullOrEmpty(base64) || base64.Length % 4 != 0)
+            {
+                return false;
+            }
+
+            // Check if the string contains only valid Base64 characters
+            foreach (char c in base64)
+            {
+                if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                      (c >= '0' && c <= '9') || c == '+' || c == '/' || c == '='))
+                {
+                    return false;
+                }
+            }
+
+            // Ensure padding is valid
+            int paddingCount = 0;
+            for (int i = base64.Length - 1; i >= 0; i--)
+            {
+                if (base64[i] == '=')
+                    paddingCount++;
+                else
+                    break;
+            }
+
+            return paddingCount <= 2;  // Valid Base64 can have at most 2 padding characters
         }
     }
 }

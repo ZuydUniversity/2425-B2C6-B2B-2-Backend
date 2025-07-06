@@ -89,9 +89,10 @@ namespace API
 
         private static void ConfigureHttps(WebApplicationBuilder builder)
         {
-            // Check if SSL certificate and key are provided via environment variables
+            // Check if SSL certificate, key, and password are provided via environment variables
             var sslCert = Environment.GetEnvironmentVariable("SSL_CERTIFICATE");
             var sslKey = Environment.GetEnvironmentVariable("SSL_PRIVATE_KEY");
+            var sslPassword = Environment.GetEnvironmentVariable("SSL_PASSWORD");
 
             if (!string.IsNullOrEmpty(sslCert) && !string.IsNullOrEmpty(sslKey))
             {
@@ -102,10 +103,24 @@ namespace API
                     var keyBytes = Convert.FromBase64String(sslKey);
 
                     // Create X509Certificate2 from the certificate and key files
-                    // Since these are already in the correct format, we can use CreateFromPem
                     var certificate = X509Certificate2.CreateFromPem(
                         System.Text.Encoding.UTF8.GetString(certBytes),
                         System.Text.Encoding.UTF8.GetString(keyBytes));
+
+                    // If a password is provided, create a new certificate with the password
+                    if (!string.IsNullOrEmpty(sslPassword))
+                    {
+                        // Export the certificate to PFX format
+                        byte[] pfxData = certificate.Export(X509ContentType.Pfx);
+
+                        // Create a new certificate with the password and ephemeral key set
+                        certificate = new X509Certificate2(
+                            pfxData,
+                            sslPassword,  // Use the password directly (not Base64 encoded)
+                            X509KeyStorageFlags.EphemeralKeySet);
+
+                        Console.WriteLine("Certificate loaded with password protection.");
+                    }
 
                     // Configure Kestrel to use HTTPS with the certificate
                     builder.WebHost.ConfigureKestrel(serverOptions =>
